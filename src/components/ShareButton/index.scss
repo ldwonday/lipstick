@@ -1,0 +1,97 @@
+@import "../../asset/styles/_mixin.scss";
+.share-button {
+	position: fixed;
+	bottom: 15rpx;
+	left: 0;
+	right: 0;
+	display: flex;
+	width: 70vw;
+	padding: 18rpx 15rpx;
+	margin: 0 auto;
+	z-index: 999;
+	border-radius: 50rpx;
+	background: rgba(33,33,33,1);
+	> view {
+		flex-grow: 1;
+		display: inline-block;
+		line-height: 1;
+		padding: 0 15rpx;
+		font-size: 18px;
+		text-align: center;
+		box-sizing: border-box;
+	}
+	button {
+		padding: 0;
+		background: transparent;
+		line-height: 1;
+	}
+
+	button::after {
+		display: none;
+	}
+
+	.home {
+		border-right: 1px solid rgba(255,255,255,.3);
+		font-weight: bold;
+	}
+
+	image {
+		display: inline-block;
+		width: 50rpx;
+		height: 50rpx;
+		vertical-align: bottom;
+	}
+
+	text {
+		display: inline-block;
+		height: 50rpx;
+		line-height: 50rpx;
+		padding-left: 10rpx;
+		color: #fff;
+		font-size: 35rpx;
+		vertical-align: bottom;
+	}
+
+	.share {
+		position: relative;
+
+		@include shake('tada', 5);
+	}
+
+	.share text {
+		color: #00EC00;
+		font-weight: bold;
+	}
+	.share-tips {
+		position: absolute;
+		bottom: 127%;
+		right: 10rpx;
+		width: 40vw;
+		line-height: 1.4;
+		padding: 10rpx 15rpx;
+		border-radius: 20rpx;
+		font-weight: 600;
+		color: #00EC00;
+		text-align: left;
+    font-size:32rpx;
+    background: rgba(33,33,33,.9);
+		overflow: unset;
+		//animation: 5s opacity2 3s 1;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.2),0 -1px 1px rgba(0,0,0,0.1);
+	}
+
+	@keyframes opacity2{
+		0%{opacity:0}
+		50%{opacity:.8;}
+		100%{opacity:0;}
+	}
+	.share-tips::after {
+		content: '';
+		position: absolute;
+		top: 100%;
+		left: 40%;
+		margin: auto;
+		border: 20rpx solid transparent;
+		border-top-color: rgba(33,33,33,.9);
+	}
+}

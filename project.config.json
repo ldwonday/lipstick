@@ -1,0 +1,42 @@
+{
+	"miniprogramRoot": "./dist",
+	"projectname": "article-mini-program-taro",
+	"description": "article",
+	"appid": "wx7bf430cf3065b8e0",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"list": []
+		},
+		"miniprogram": {
+			"current": 0,
+			"list": [
+				{
+					"id": 0,
+					"name": "share",
+					"pathName": "routes/article/index",
+					"query": "packetNo=175965837746295"
+				}
+			]
+		}
+	}
+}
