@@ -28,13 +28,19 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 1,
 			"list": [
 				{
 					"id": 0,
 					"name": "share",
 					"pathName": "routes/article/index",
 					"query": "packetNo=175965837746295"
+				},
+				{
+					"id": 1,
+					"name": "detail",
+					"pathName": "routes/detail/index",
+					"query": "id=2540"
 				}
 			]
 		}

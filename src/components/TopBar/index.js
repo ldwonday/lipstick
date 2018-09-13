@@ -37,12 +37,12 @@ class TopBar extends Component {
         <View className="startBar" style={{ height: startBarHeight + 'px' }} />
         <View className="navgation" style={{ height: navigationHeight + 'px' }}>
           {isShowBack && (
-            <View onClick={this.goBack.bind(this)} className="top-back">
-              <View className="back">
+            <block>
+              <View className="back" onClick={this.goBack.bind(this)}>
                 <Image src="../../asset/images/back.png" />
               </View>
               <View className="title left">{title}</View>
-            </View>
+            </block>
           )}
           {!isShowBack && (
             <block>

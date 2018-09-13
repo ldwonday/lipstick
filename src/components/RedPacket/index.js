@@ -1,3 +1,4 @@
+import { connect } from '@tarojs/redux'
 import _ from 'lodash'
 import { View, Image, Text, Button } from '@tarojs/components'
 import Taro, { Component } from '@tarojs/taro'
@@ -17,8 +18,16 @@ import {
   getStorageShareTimes,
   getNavHeight,
 } from '../../utils'
+import action from '../../utils/action'
 import './index.scss'
 
+const effectName = name => `redPacket/${name}`
+const packetAction = (name, payload) => action(effectName(name), payload)
+
+@connect(({ redPacket, app }) => ({
+  redPacket,
+  userInfo: app.userInfo,
+}))
 export default class extends Component {
   static defaultProps = {
     position: {
@@ -38,7 +47,7 @@ export default class extends Component {
   countDown = null
   isClickPacket = false
   getShareConfig = cb => {
-    const { userInfo, packet } = this.props
+    const { userInfo, redPacket: { packet } } = this.props
     const path = `/routes/article/index?avatar=${encodeURIComponent(userInfo.avatarUrl)}&userName=
       ${userInfo.nickName}&packetNo=${packet.recordView.packetNo}`
     console.log(path)
@@ -50,9 +59,19 @@ export default class extends Component {
     }
   }
   closePacket() {
-    this.props.onSave({ sharePacket: {} })
+    this.isClickPacket = false
+    this.setState({
+      showStatus: NONE,
+    })
+
+    this.props.dispatch(packetAction('save', { sharePacket: {} }))
+
+    if (this.countDown) {
+      clearInterval(this.countDown)
+      this.countDown = null
+    }
   }
-  pickPacket() {
+  pickPacket(id) {
     if (this.data.pickBtnDisabled) {
       return
     }
@@ -67,12 +86,12 @@ export default class extends Component {
     this.setState({
       pickBtnDisabled: true,
     })
-    const packet = _.cloneDeep(this.props.packet)
+    const { dispatch } = this.props
+    const packet = _.cloneDeep(this.props.redPacket.packet)
     console.log('pickPacket packet start ===> ', packet)
     const index = packet.detailViews.length - 1
-    this.props.onPickPacket(
-      packet.detailViews[index].id,
-      async () => {
+    dispatch(packetAction('grab', packet.detailViews[index].id))
+      .then(async res => {
         this.setState({
           isMoneyMove: true,
           pickBtnDisabled: false,
@@ -85,47 +104,46 @@ export default class extends Component {
             if (status === 1) {
               await setStorageShareTimes(0)
             }
-            this.props.onSave({
-              assistRecords: [],
-              canGrap: false,
-              detailViews: [],
-              recordView: {
-                status,
-              },
-            })
+            dispatch(
+              packetAction('save', {
+                assistRecords: [],
+                canGrap: false,
+                detailViews: [],
+                recordView: {
+                  status,
+                },
+              })
+            )
             console.log('pickPacket result ===>', this)
           } catch (e) {
             console.log('pickPacket error ===> ', e)
           }
         } else {
           this.moneyMove()
-          this.props.save({
-            ...packet,
-          })
+          dispatch(
+            packetAction('save', {
+              ...packet,
+            })
+          )
         }
-      },
-      () => {
-        this.setData({
+      })
+      .catch(e => {
+        console.log('pick error ===> ', e)
+        this.setState({
           pickBtnDisabled: false,
         })
-      }
-    )
+      })
   }
-  openPacket(e) {
+  async openPacket(e) {
+    showWxLoading()
     this.isClickPacket = true
-    this.props.onGetPacket()
+    this.props.dispatch(packetAction('get'))
+    hideWxLoading()
   }
   assistPacket() {
-    this.props.onAssistPacket(() => {
-      this.setData({
-        state: ASSIST_SUCCESS,
-      })
-    })
+    this.props.dispatch(packetAction('assist'))
   }
   async checkPacket(nextProps) {
-    if (!nextProps) {
-      return
-    }
     const { packet, sharePacket } = nextProps
     console.log('checkPacket start ===> ', this.isClickPacket, packet, sharePacket)
     let showStatus = NONE
@@ -153,7 +171,7 @@ export default class extends Component {
               const resTimes = await getStorageShareTimes()
               const shareTimes = resTimes.data
               if (shareTimes >= shareTotalTimes) {
-                this.props.extraPacket()
+                this.props.dispatch(packetAction('extra'))
               } else {
                 this.setData({
                   shareTimes,
@@ -262,7 +280,7 @@ export default class extends Component {
     })
   }
   componentWillReceiveProps = nextProps => {
-    this.checkPacket(nextProps)
+    this.checkPacket(nextProps.redPacket)
   }
 
   render() {
@@ -282,9 +300,10 @@ export default class extends Component {
       position,
       icon,
       userInfo,
-      packet,
-      sharePacket
+      redPacket,
     } = this.props
+
+    const { packet, sharePacket } = redPacket || {}
 
     const { recordView, detailViews, assistRecords } = packet || {}
 
@@ -308,7 +327,9 @@ export default class extends Component {
               <Image src={icon} />
             </Button>
           )}
-          {detailViews && detailViews.length > 0 && (<View className="num-tip">
+          {detailViews &&
+            detailViews.length > 0 && (
+              <View className="num-tip">
                 <View>{detailViews.length}</View>
               </View>
             )}
@@ -424,12 +445,9 @@ export default class extends Component {
                 {recordView.status === 1 && shareTimes === 0 && (
                   <Text className="top-tip">今天的红包已领完，明天再来吧</Text>
                 )}
-                {recordView.status === 1 &&
-                  shareTimes > 0 && (
-                    <Text className="top-tip" style="font-size: 48rpx">
-                      今天的红包已领完，明天再来吧
-                    </Text>
-                  )}
+                {recordView.status === 1 && shareTimes > 0 && (
+                  <Text className="top-tip" style="font-size: 48rpx">今天的红包已领完，明天再来吧</Text>
+                )}
                 <View className="main">
                   <View className="close" onClick={this.closePacket.bind(this)}>
                     <Image src="../../asset/images/ic_close@2x.png" />

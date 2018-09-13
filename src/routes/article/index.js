@@ -5,16 +5,13 @@ import action from '../../utils/action'
 import config from '../../config'
 import { TopBar, NavBar, Container, Packet, Card, Loading } from '../../components'
 import './index.scss'
-import {hideWxLoading, showWxLoading} from "../../utils"
 
 const effectName = name => `article/${name}`
 const articleAction = (name, payload) => action(effectName(name), payload)
 const redPacketAction = (name, payload) => action(`redPacket/${name}`, payload)
-@connect(({ article, user, app, redPacket, loading }) => ({
+@connect(({ article, user, loading }) => ({
   article,
   user,
-  app,
-  redPacket,
   isLoad: loading.effects['article/list'],
   isLoadMore: loading.effects[effectName('loadMore')],
   isReFresh: loading.effects[effectName('refresh')],
@@ -50,7 +47,6 @@ export default class extends Component {
         })
       }
       if (type === 'help' || type === 'assist') {
-        console.log(Taro.getApp())
         return this.packetCom.getShareConfig(showToast)
       }
     }
@@ -66,60 +62,23 @@ export default class extends Component {
   refPacket(node) {
     this.packetCom = node
   }
-
-  save = payload => {
-    this.props.dispatch(redPacketAction('save', payload))
-  }
-  extraPacket = () => {
-    this.props.dispatch(redPacketAction('extra'))
-  }
-  pickPacket = (id, successCb, errorCb) => {
-    showWxLoading()
-    this.props
-      .dispatch(redPacketAction('grab', id))
-      .then(_ => {
-        successCb && successCb()
-        hideWxLoading()
-      })
-      .catch(e => {
-        errorCb()
-      })
-  }
-  assistPacket = cb => {
-    showWxLoading()
-    this.props.dispatch(redPacketAction('assist')).then(_ => {
-      cb && cb()
-      hideWxLoading()
-    })
-  }
-  getPacket = () => {
-    showWxLoading()
-    this.props.dispatch(redPacketAction('get')).then(_ => {
-      hideWxLoading()
-    })
-  }
-
   render() {
     const {
-      dispatch,
       isLoad,
       isReFresh,
       article: { list, redPacketPosition },
       user: { balance },
-      app: { userInfo },
       page,
-      redPacket: { packet, sharePacket },
     } = this.props
 
     const packetProps = {
       position: redPacketPosition,
       icon: '/asset/images/ic_reward@2x.png',
-      sharePacket,
-      packet,
-      userInfo,
     }
 
     const adId = `adunit-${config.ad.article}`
+
+    const adDiff = 7
 
     return (
       <View>
@@ -141,8 +100,8 @@ export default class extends Component {
                       key={item.nId}
                       to={`/routes/detail/index?id=${item.nId}&page=${page}`}
                     />
-                    {adIndex / 5 > 0 &&
-                      adIndex % 5 === 0 && (
+                    {adIndex / adDiff > 0 &&
+                      adIndex % adDiff === 0 && (
                         <View className="ad">
                           <ad className="ad" unitId={adId} />
                         </View>
@@ -161,13 +120,6 @@ export default class extends Component {
             ref={this.refPacket}
             position={packetProps.position}
             icon={packetProps.icon}
-            packet={packetProps.packet}
-            sharePacket={packetProps.sharePacket}
-            userInfo={packetProps.userInfo}
-            onSave={this.save.bind(this)}
-            onGetPacket={this.getPacket.bind(this)}
-            onPickPacket={this.pickPacket.bind(this)}
-            onAssistPacket={this.assistPacket.bind(this)}
           />
         </Container>
       </View>

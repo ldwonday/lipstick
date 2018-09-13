@@ -19,6 +19,7 @@ export default class extends Component {
   state = {
     nodeList: null,
     previewImg: [],
+    isShowBottomAd: false,
   }
   config = {
     usingComponents: {
@@ -26,7 +27,26 @@ export default class extends Component {
     },
   }
   componentDidMount = async () => {
-    this.props.dispatch(mappingAction('init', this.$router.params))
+    const res = await Taro.getSystemInfo()
+    this.windowHeight = res.windowHeight
+    this.props.dispatch(mappingAction('init', this.$router.params)).then(_ => {
+      setTimeout(() => {
+        Taro.createSelectorQuery()
+          .selectAll('.top')
+          .boundingClientRect(rects => {
+            rects.forEach(rect => {
+              const topHeight = rect.height + 68
+              console.log(topHeight, this.windowHeight)
+              if (topHeight > this.windowHeight) {
+                this.setState({
+                  isShowBottomAd: true,
+                })
+              }
+            })
+          })
+          .exec()
+      }, 1000)
+    })
   }
   onReachBottom = () => {
     const { dispatch } = this.props
@@ -102,11 +122,12 @@ export default class extends Component {
       article,
     } = this.props
 
-    const { nodeList } = this.state
+    const { nodeList, isShowBottomAd } = this.state
 
     const adHead = `adunit-${config.ad.detail.head}`
     const adMiddle = `adunit-${config.ad.detail.middle}`
     const adList = `adunit-${config.ad.detail.list}`
+    const adDiff = 7
 
     return (
       <View>
@@ -116,45 +137,49 @@ export default class extends Component {
             <Loading height="calc(100vh - 90rpx)" content="加载中..." />
           ) : (
             <block>
-              <View className="title-container">
-                <View className="title">{article.title}</View>
-                {/* <View className="time">{article.time}发布</View> */}
-              </View>
-              <View className="ad">
-                <ad className="ad" unitId={adHead} />
-              </View>
-              <View className="content">
-                {article.vid && (
-                  <View style="margin-bottom: 10rpx">
-                    <txv-video playerid="video" vid={article.vid} />
+              <View className="top">
+                <View className="title-container">
+                  <View className="title">{article.title}</View>
+                  {/* <View className="time">{article.time}发布</View> */}
+                </View>
+                <View className="ad">
+                  <ad className="ad" unitId={adHead} />
+                </View>
+                <View className="content">
+                  {article.vid && (
+                    <View style="margin-bottom: 10rpx">
+                      <txv-video playerid="video" vid={article.vid} />
+                    </View>
+                  )}
+                  {nodeList &&
+                    nodeList.map((node, index) => {
+                      return (
+                        <View className="graphic-item" key={index}>
+                          {node.url &&
+                            node.url !== '' && (
+                              <Image
+                                onClick={this.showPreviewImage.bind(this)}
+                                data-imgurl={node.url}
+                                mode="widthFix"
+                                src={node.url}
+                              />
+                            )}
+                          <Text wx:if="{{node.Text&&node.Text!==''}}">{node.Text}</Text>
+                        </View>
+                      )
+                    })}
+                  {!nodeList && (
+                    <block>
+                      <import src="../../components/wxParse/wxParse.wxml" />
+                      <template is="wxParse" data="{{wxParseData:richContent.nodes}}" />
+                    </block>
+                  )}
+                </View>
+                {isShowBottomAd && (
+                  <View className="ad" style="margin-bottom: 0;">
+                    <ad className="ad" unitId={adMiddle} />
                   </View>
                 )}
-                {nodeList &&
-                  nodeList.map((node, index) => {
-                    return (
-                      <View className="graphic-item" key={index}>
-                        {node.url &&
-                          node.url !== '' && (
-                            <Image
-                              onClick={this.showPreviewImage.bind(this)}
-                              data-imgurl={node.url}
-                              mode="widthFix"
-                              src={node.url}
-                            />
-                          )}
-                        <Text wx:if="{{node.Text&&node.Text!==''}}">{node.Text}</Text>
-                      </View>
-                    )
-                  })}
-                {!nodeList && (
-                  <block>
-                    <import src="../../components/wxParse/wxParse.wxml" />
-                    <template is="wxParse" data="{{wxParseData:richContent.nodes}}" />
-                  </block>
-                )}
-              </View>
-              <View className="ad">
-                <ad className="ad" unitId={adMiddle} />
               </View>
               <View className="bottom">
                 <View className="head">
@@ -191,8 +216,8 @@ export default class extends Component {
                               <Image src={item.cover} />
                             </View>
                           </View>
-                          {adIndex / 5 > 0 &&
-                            adIndex % 5 === 0 && (
+                          {adIndex / adDiff > 0 &&
+                            adIndex % adDiff === 0 && (
                               <View className="ad">
                                 <ad className="ad" unitId={adList} />
                               </View>

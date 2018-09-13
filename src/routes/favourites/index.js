@@ -9,7 +9,7 @@ import './index.scss'
 const effectName = name => `favourites/${name}`
 const mappingAction = (name, payload) => action(effectName(name), payload)
 @connect(({ favourites, user, loading }) => ({
-  ...favourites,
+  favourites,
   user,
 }))
 export default class extends Component {
@@ -17,9 +17,10 @@ export default class extends Component {
     this.props.dispatch(mappingAction('init'))
   }
   onShareAppMessage = e => {
+    const { list } = this.props.favourites
     const { id } = e.target.dataset
     if (id) {
-      const cur = this.props.list.find(item => item.nId === id)
+      const cur = list.find(item => item.nId === id)
       return {
         title: cur.title,
         path: `/routes/detail/index?id=${id}`,
@@ -34,11 +35,12 @@ export default class extends Component {
   }
   render() {
     const {
-      list,
+      favourites: { list },
       user: { balance },
     } = this.props
 
     const adId = `adunit-${config.ad.fav}`
+    console.log('asdasd', list)
 
     return (
       <View>

@@ -18,7 +18,7 @@ export default modelExtend(model, {
     },
     *remove({ payload }, { call, put, take }) {
       const { data } = yield Taro.getStorage({ key: 'favourite' })
-      const index = data.find(item => item.nId === payload)
+      const index = data.findIndex(item => item.nId === payload)
       const modal = yield Taro.showModal({
         title: '提示',
         content: '确认要删除吗？',
