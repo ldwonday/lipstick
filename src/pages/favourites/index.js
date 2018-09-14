@@ -40,7 +40,6 @@ export default class extends Component {
     } = this.props
 
     const adId = `adunit-${config.ad.fav}`
-    console.log('asdasd', list)
 
     return (
       <View>

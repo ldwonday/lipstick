@@ -1,0 +1,30 @@
+.too-add-tip{
+	display: flex;
+	height: 80rpx;
+	background: #fdd035;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 30rpx;
+	image.shouzhi{
+		width: 60rpx;
+		height: 60rpx;
+		position: absolute;
+		right: 110rpx;
+		animation: beat 1s infinite;
+	}
+	@keyframes beat {
+		0%{
+			top: 0%;
+		}
+		50%{
+			top: 10rpx;
+		}
+		100%{
+			top: 0;
+		}
+	}
+	image.close{
+		width: 36rpx;
+		height: 36rpx;
+	}
+}

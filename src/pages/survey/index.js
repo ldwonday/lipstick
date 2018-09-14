@@ -20,7 +20,7 @@ export default class extends Component {
     const userInfo = getStorageSynctUserInfo()
     return {
       title: `${userInfo && userInfo.nickName ? userInfo.nickName : ''}@你，生命只有一次，快点击测试吧↓↓↓`,
-      imageUrl: 'https://klimg.pptmbt.com/pub/article/test-share.jpg',
+      imageUrl: 'https://klimg.pptmbt.com/pub/article/test-share2.gif',
       path: '/routes/survey/index',
     }
   }

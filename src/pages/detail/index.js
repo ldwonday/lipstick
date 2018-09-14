@@ -1,4 +1,4 @@
-import { View, Text, Image, Button } from '@tarojs/components'
+import { View, Text, Image, Button, Form } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import Taro, { Component } from '@tarojs/taro'
 import WxParse from '../../components/wxParse/wxParse'
@@ -29,6 +29,7 @@ export default class extends Component {
   componentDidMount = async () => {
     const res = await Taro.getSystemInfo()
     this.windowHeight = res.windowHeight
+    console.log(this.$router.params)
     this.props.dispatch(mappingAction('init', this.$router.params)).then(_ => {
       setTimeout(() => {
         Taro.createSelectorQuery()
@@ -85,13 +86,6 @@ export default class extends Component {
   saveFavourite() {
     this.props.dispatch(mappingAction('saveFavourite', this.props.article))
   }
-  goDetail(e) {
-    const { page } = this.props
-    const { id } = e.currentTarget.dataset
-    console.log(page, id)
-    const url = `/routes/detail/index?id=${id}&page=${page}`
-    Taro.redirectTo({ url })
-  }
   showPreviewImage(t) {
     const { previewImg, nodeList } = this.state
     let list = []
@@ -114,6 +108,13 @@ export default class extends Component {
       current: imgUrl,
       urls: list,
     })
+  }
+  reportForm(e) {
+    console.log(this.props.page)
+    const { id } = e.currentTarget.dataset
+    const url = `/routes/detail/index?id=${id}&page=${this.props.page}`
+    Taro.redirectTo({ url })
+    this.props.dispatch(action('app/submitForm', e.detail.formId))
   }
   render() {
     const {
@@ -201,28 +202,35 @@ export default class extends Component {
                     list.map((item, index) => {
                       const adIndex = index + 1
                       return (
-                        <block>
-                          <View
-                            onClick={this.goDetail.bind(this)}
-                            data-id={item.nId}
-                            className="list"
-                            key={item.nId}
-                          >
-                            <View className="article-title">
-                              <View className="head">{item.title}</View>
-                              {/* <View className="time">{item.time}</View> */}
+                        <Form
+                          reportSubmit
+                          onSubmit={this.reportForm.bind(this)}
+                          data-id={item.nId}
+                          key={item.nId}
+                        >
+                          <Button formType="submit" className="custom card-btn">
+                            <View
+                              onClick={this.goDetail.bind(this)}
+                              data-id={item.nId}
+                              className="list"
+                              key={item.nId}
+                            >
+                              <View className="article-title">
+                                <View className="head">{item.title}</View>
+                                {/* <View className="time">{item.time}</View> */}
+                              </View>
+                              <View className="article-img">
+                                <Image src={item.cover} />
+                              </View>
                             </View>
-                            <View className="article-img">
-                              <Image src={item.cover} />
-                            </View>
-                          </View>
-                          {adIndex / adDiff > 0 &&
+                            {adIndex / adDiff > 0 &&
                             adIndex % adDiff === 0 && (
                               <View className="ad">
                                 <ad className="ad" unitId={adList} />
                               </View>
                             )}
-                        </block>
+                          </Button>
+                        </Form>
                       )
                     })}
                 </View>

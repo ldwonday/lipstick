@@ -1,9 +1,9 @@
-import { View, Text, Image } from '@tarojs/components'
+import { View, Text, Image, Form, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import Taro, { Component } from '@tarojs/taro'
 import action from '../../utils/action'
 import config from '../../config'
-import { TopBar, NavBar, Container, Packet, Card, Loading } from '../../components'
+import { TopBar, NavBar, TopAddTip, Container, Packet, Card, Loading } from '../../components'
 import './index.scss'
 
 const effectName = name => `article/${name}`
@@ -62,13 +62,18 @@ export default class extends Component {
   refPacket(node) {
     this.packetCom = node
   }
+  reportForm(e) {
+    const { id } = e.currentTarget.dataset
+    const url = `/routes/detail/index?id=${id}&page=${this.props.article.page}`
+    Taro.navigateTo({ url })
+    this.props.dispatch(action('app/submitForm', e.detail.formId))
+  }
   render() {
     const {
       isLoad,
       isReFresh,
       article: { list, redPacketPosition },
       user: { balance },
-      page,
     } = this.props
 
     const packetProps = {
@@ -84,6 +89,7 @@ export default class extends Component {
       <View>
         <TopBar isShowBack={false} balance={balance} />
         <Container>
+          <TopAddTip />
           {isReFresh && <View className="update">已更新</View>}
           {isLoad ? (
             <Loading height="calc(100vh - 90rpx)" content="加载中..." />
@@ -93,20 +99,22 @@ export default class extends Component {
                 const { title, cover } = item
                 const adIndex = index + 1
                 return (
-                  <block>
-                    <Card
-                      title={title}
-                      cover={cover}
-                      key={item.nId}
-                      to={`/routes/detail/index?id=${item.nId}&page=${page}`}
-                    />
+                  <Form
+                    reportSubmit
+                    onSubmit={this.reportForm.bind(this)}
+                    data-id={item.nId}
+                    key={item.nId}
+                  >
+                    <Button formType="submit" className="custom card-btn">
+                      <Card title={title} cover={cover} />
+                    </Button>
                     {adIndex / adDiff > 0 &&
                       adIndex % adDiff === 0 && (
                         <View className="ad">
                           <ad className="ad" unitId={adId} />
                         </View>
                       )}
-                  </block>
+                  </Form>
                 )
               })}
             </View>
