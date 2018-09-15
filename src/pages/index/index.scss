@@ -33,13 +33,13 @@
 	position: fixed;
 	justify-content: center;
 	align-items: center;
-	right: 0;
+	left: 0;
 	top: 50%;
 	transform: translateY(-50%);
 	background: #fff;
 	font-size: 32rpx;
-	border-top-left-radius: 10rpx;
-	border-bottom-left-radius: 10rpx;
+	border-top-right-radius: 10rpx;
+	border-bottom-right-radius: 10rpx;
 	box-shadow: 5rpx 5rpx 15rpx 0rpx rgba(0, 0, 0, 0.6);
 	transition: all 0.3s;
 	&:active{

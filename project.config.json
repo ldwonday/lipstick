@@ -1,5 +1,5 @@
 {
-	"miniprogramRoot": "./dist",
+	"miniprogramRoot": "dist/",
 	"projectname": "article-mini-program-taro",
 	"description": "article",
 	"appid": "wx7bf430cf3065b8e0",
@@ -11,6 +11,7 @@
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
+	"libVersion": "2.3.0",
 	"condition": {
 		"search": {
 			"current": -1,
@@ -28,19 +29,19 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 1,
+			"current": 0,
 			"list": [
 				{
 					"id": 0,
 					"name": "share",
-					"pathName": "routes/article/index",
-					"query": "packetNo=175965837746295"
+					"pathName": "pages/index/index",
+					"query": "packetNo=808003680746217&avatar=https://wx.qlogo.cn/mmopen/vi_32/ibgb3PCqwOgZywn9SLPpJue6FUkU4SDMY23ibeKMQdFC8QIMa7L8nNXXLHF1F45wuxuEmibk0QsLCZFYWq3WYlfyg/132&userName=雪啊"
 				},
 				{
 					"id": 1,
 					"name": "detail",
-					"pathName": "routes/detail/index",
-					"query": "id=2540"
+					"pathName": "pages/detail/index",
+					"query": "id=2587"
 				}
 			]
 		}

@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { Provider } from '@tarojs/redux'
 import '@tarojs/async-await'
-import Index from './routes/article'
+import Index from './pages/index'
 import dva from './dva'
 import models from './model'
 import action from './utils/action'
@@ -27,19 +27,18 @@ const store = dvaApp.getStore()
 class App extends Component {
   config = {
     pages: [
-      'routes/article/index',
-      'routes/detail/index',
-      'routes/cash/index',
-      'routes/favourites/index',
-      'routes/survey/index',
-      'routes/survey/detail/index',
+      'pages/index/index',
+      'pages/detail/index',
+      'pages/cash/index',
+      'pages/favourites/index',
+      'pages/survey/index',
+      'pages/survey/detail/index',
     ],
     window: {
-      backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#d89',
+      backgroundTextStyle: 'dark',
+      navigationBarBackgroundColor: '#dd312f',
       navigationBarTitleText: '每天趣闻',
       navigationBarTextStyle: 'white',
-      navigationStyle: 'custom',
     },
     plugins: {
       tencentvideo: {
@@ -58,7 +57,6 @@ class App extends Component {
       })
     } else {
       hideWxLoading()
-      showModal(e === AUTHORIZE_REJECT ? '请先授权，才能领红包哦' : '登录失败')
     }
   }
 
@@ -72,7 +70,7 @@ class App extends Component {
     }
 
     const loginResult = getStorageSyncLoginResult()
-    const path = `/routes/index/index${(loginResult && loginResult.shareCode) ? `?shareCode=${loginResult.shareCode}` : ''}`
+    const path = `/pages/index/index${(loginResult && loginResult.shareCode) ? `?shareCode=${loginResult.shareCode}` : ''}`
     console.log(path)
     return {
       title,

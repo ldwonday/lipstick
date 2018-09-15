@@ -19,7 +19,7 @@ export default class extends Component {
   }
   goHome() {
     Taro.getCurrentPages().length === 1
-      ? Taro.redirectTo({ url: '/routes/article/index' })
+      ? Taro.redirectTo({ url: '/pages/index/index' })
       : Taro.navigateBack()
   }
   changeShareTips() {

@@ -4,16 +4,15 @@ import Taro, { Component } from '@tarojs/taro'
 import WxParse from '../../components/wxParse/wxParse'
 import action from '../../utils/action'
 import { getStorageShareTimes, setStorageShareTimes } from '../../utils'
-import { TopBar, ShareButton, Container, Packet, Loading } from '../../components'
+import { ShareButton, Loading } from '../../components'
 import './index.scss'
 import config from '../../config'
 
 const effectName = name => `detail/${name}`
 const mappingAction = (name, payload) => action(effectName(name), payload)
 @connect(({ detail, loading }) => ({
-  ...detail,
-  isLoading: loading.effects['detail/init'],
-  isLoadMore: loading.effects[effectName('loadMore')],
+  detail,
+  loading,
 }))
 export default class extends Component {
   state = {
@@ -54,7 +53,7 @@ export default class extends Component {
     dispatch(mappingAction('loadMore'))
   }
   componentWillReceiveProps = nextProps => {
-    const { article } = nextProps
+    const { article } = nextProps.detail
     let content = article.content
     try {
       content = JSON.parse(content)
@@ -70,11 +69,11 @@ export default class extends Component {
     }
   }
   onShareAppMessage = e => {
-    const { title, nId, cover } = this.props.article
+    const { title, nId, cover } = this.props.detail.article
     return {
       title,
       imageUrl: cover,
-      path: `/routes/detail/index?id=${nId}`,
+      path: `/pages/detail/index?id=${nId}`,
       success: async () => {
         const resTimes = await getStorageShareTimes()
         let time = resTimes.data
@@ -84,7 +83,7 @@ export default class extends Component {
     }
   }
   saveFavourite() {
-    this.props.dispatch(mappingAction('saveFavourite', this.props.article))
+    this.props.dispatch(mappingAction('saveFavourite', this.props.detail.article))
   }
   showPreviewImage(t) {
     const { previewImg, nodeList } = this.state
@@ -112,16 +111,21 @@ export default class extends Component {
   reportForm(e) {
     console.log(this.props.page)
     const { id } = e.currentTarget.dataset
-    const url = `/routes/detail/index?id=${id}&page=${this.props.page}`
+    const url = `/pages/detail/index?id=${id}&page=${this.props.page}`
     Taro.redirectTo({ url })
     this.props.dispatch(action('app/submitForm', e.detail.formId))
   }
   render() {
     const {
-      isLoading,
-      list,
-      article,
+      loading,
+      detail: {
+        list,
+        article,
+      },
     } = this.props
+
+    const isLoading = loading.effects['detail/init']
+    const isLoadMore = loading.effects[effectName('loadMore')]
 
     const { nodeList, isShowBottomAd } = this.state
 
@@ -131,9 +135,8 @@ export default class extends Component {
     const adDiff = 7
 
     return (
-      <View>
-        <TopBar isShowBack />
-        <Container>
+      <block>
+        <View className="container">
           {isLoading ? (
             <Loading height="calc(100vh - 90rpx)" content="加载中..." />
           ) : (
@@ -238,8 +241,8 @@ export default class extends Component {
             </block>
           )}
           <ShareButton />
-        </Container>
-      </View>
+        </View>
+      </block>
     )
   }
 }

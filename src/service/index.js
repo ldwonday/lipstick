@@ -3,7 +3,7 @@ import config from '../config'
 import request from '../utils/request'
 import { setStorageProduct, getStorageProduct } from '../utils'
 
-const { product, barrage, login, balance, checkStatus, saveUserInfo, order, code, retrieve, pay } = config.api
+const { product, barrage, login, balance, checkStatus, saveUserInfo, order, code, retrieve, pay, formSubmit } = config.api
 const baseQs = {
 	qs: {
 		appId: config.appId,
@@ -135,6 +135,15 @@ export const queryBalanceDetail = async (params) => {
 			...params
 		},
 	})
+}
+export const submitForm = async (formId) => {
+  return request(formSubmit(formId), {
+    customToken: true,
+    showFailMsg: false,
+    qs: {
+      ...baseQs.qs,
+    },
+  })
 }
 export const withDraw = async ({ amount, formId }) => {
 	return request(pay.withdraw, {

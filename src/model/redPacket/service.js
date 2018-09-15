@@ -42,7 +42,7 @@ export const packetAssist = async (packetNo) => {
 	})
 }
 
-export const packetGrabList = async (pageNum, pageSize = 10) => {
+export const packetGrabList = async ({ pageNum, pageSize = 10 }) => {
 	return request(grabList, {
 		customToken: true,
 		showFailMsg: false,

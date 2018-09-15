@@ -1,11 +1,12 @@
-import { View } from '@tarojs/components'
+import { View, Form, Button, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import Taro, { Component } from '@tarojs/taro'
 import action from '../../utils/action'
 import config from '../../config'
-import { TopBar, Container, NavBar } from '../../components'
+import { NavBar } from '../../components'
 import './index.scss'
 import { getStorageSynctUserInfo } from '../../utils'
+import { SHARE_IMAGE } from './const'
 
 const effectName = name => `survey/${name}`
 const mappingAction = (name, payload) => action(effectName(name), payload)
@@ -19,15 +20,16 @@ export default class extends Component {
   onShareAppMessage = () => {
     const userInfo = getStorageSynctUserInfo()
     return {
-      title: `${userInfo && userInfo.nickName ? userInfo.nickName : ''}@你，生命只有一次，快点击测试吧↓↓↓`,
-      imageUrl: 'https://klimg.pptmbt.com/pub/article/test-share2.gif',
-      path: '/routes/survey/index',
+      title: '全中国80万人在疯传的测试，强烈推荐！',
+      imageUrl: SHARE_IMAGE,
+      path: '/pages/survey/index',
     }
   }
-  goDetail() {
+  goDetail(e) {
     Taro.navigateTo({
-      url: '/routes/survey/detail/index',
+      url: '/pages/survey/detail/index',
     })
+    this.props.dispatch(action('app/submitForm', e.detail.formId))
   }
   render() {
     const adId = `adunit-${config.ad.survey}`
@@ -37,16 +39,21 @@ export default class extends Component {
     } = this.props
 
     return (
-      <View>
-        <TopBar isShowBack={false} balance={balance} />
-        <Container>
-          <View className="card" onClick={this.goDetail.bind(this)} />
+      <block>
+        <View className="container">
+          <Form reportSubmit onSubmit={this.goDetail.bind(this)}>
+            <Button formType="submit" className="custom card-btn">
+              <View className="card">
+                <Image src="https://klimg.pptmbt.com/pub/article/test-body2.gif" />
+              </View>
+            </Button>
+          </Form>
           <View className="ad">
             <ad unitId={adId} />
           </View>
-        </Container>
+        </View>
         <NavBar />
-      </View>
+      </block>
     )
   }
 }

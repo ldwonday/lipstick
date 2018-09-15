@@ -1,14 +1,16 @@
 import modelExtend from 'dva-model-extend'
 import action from '../utils/action'
 import { listPageModel } from './common'
-import { queryBalanceDetail, withDraw } from '../service'
+import { withDraw } from '../service'
+import { packetGrabList } from './redPacket/service'
 import { formatDate } from '../utils/timeFormat'
 import { showWxLoading, hideWxLoading, showModal, showModalWithTitle } from '../utils'
 
+const pageSize = 7
 export default modelExtend(listPageModel, {
   namespace: 'cash',
   state: {
-    pageNum: 0,
+    page: 0,
   },
   effects: {
     *init({ payload }, { call, put, all, take }) {
@@ -17,27 +19,26 @@ export default modelExtend(listPageModel, {
     },
     *detail({ payload }, { call, select, put }) {
       const selectFilter = yield select(state => state.cash.filter)
-      const { data, isEnd } = yield call(queryBalanceDetail, selectFilter)
-      data.items.map(item => ({
+      const { data } = yield call(packetGrabList, selectFilter)
+      data.items = data.items.map(item => ({
         ...item,
         amount: item.amount.toFixed(3),
         assistDate: formatDate(item.assistDate, 'yyyy-MM-dd HH:mm:ss'),
       }))
-      selectFilter.isEnd = isEnd
       yield put(action('saveList', { data, filter: selectFilter }))
     },
     *loadMore({ payload }, { call, select, put }) {
-      const selectFilter = yield select(state => state.cash.filter)
-      if (!selectFilter.isEnd) {
-        const filter = { ...selectFilter, pageNum: selectFilter.page + 1 }
+      const cash = yield select(state => state.cash)
+      if (!cash.filter.isEnd) {
+        const filter = { ...cash.filter, page: cash.filter.page + 1 }
         const list = yield select(state => state.cash.list)
-        const { data } = yield call(queryBalanceDetail, filter)
-        const newList = data.map(item => ({
+        const { data } = yield call(packetGrabList, filter)
+        const newList = data.items.map(item => ({
           ...item,
           amount: item.amount.toFixed(3),
           assistDate: formatDate(item.assistDate, 'yyyy-MM-dd HH:mm:ss'),
         }))
-        data.items = list.concat(newList)
+        data.items = cash.list.concat(newList)
         yield put(action('saveList', { data, filter }))
       }
     },

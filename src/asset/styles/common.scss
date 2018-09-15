@@ -3,6 +3,15 @@ button{
 	&:active{
 		transform: scale(0.95);
 	}
+  &.card-btn{
+    text-align: left;
+    line-height: unset;
+    padding: 0;
+    margin: 0;
+    &:active{
+      transform: none !important;
+    }
+  }
 	&.img-button{
 		background: none;
 		padding: 0;

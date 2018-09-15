@@ -16,7 +16,6 @@ import {
   hideWxLoading,
   setStorageShareTimes,
   getStorageShareTimes,
-  getNavHeight,
 } from '../../utils'
 import action from '../../utils/action'
 import './index.scss'
@@ -24,10 +23,7 @@ import './index.scss'
 const effectName = name => `redPacket/${name}`
 const packetAction = (name, payload) => action(effectName(name), payload)
 
-@connect(({ redPacket, app }) => ({
-  redPacket,
-  userInfo: app.userInfo,
-}))
+@connect(({ redPacket, app }) => ({ redPacket, app }))
 export default class extends Component {
   static defaultProps = {
     position: {
@@ -47,8 +43,8 @@ export default class extends Component {
   countDown = null
   isClickPacket = false
   getShareConfig = cb => {
-    const { userInfo, redPacket: { packet } } = this.props
-    const path = `/routes/article/index?avatar=${encodeURIComponent(userInfo.avatarUrl)}&userName=
+    const { app: { userInfo }, redPacket: { packet } } = this.props
+    const path = `/pages/index/index?avatar=${encodeURIComponent(userInfo.avatarUrl)}&userName=
       ${userInfo.nickName}&packetNo=${packet.recordView.packetNo}`
     console.log(path)
     return {
@@ -60,19 +56,24 @@ export default class extends Component {
   }
   closePacket() {
     this.isClickPacket = false
-    this.setState({
-      showStatus: NONE,
-    })
 
-    this.props.dispatch(packetAction('save', { sharePacket: {} }))
+    const packet = _.cloneDeep(this.props.redPacket.packet)
+    delete packet.infoView
+
+    this.props.dispatch(packetAction('save', { sharePacket: null, packet }))
 
     if (this.countDown) {
       clearInterval(this.countDown)
       this.countDown = null
     }
   }
-  pickPacket(id) {
-    if (this.data.pickBtnDisabled) {
+  pickPacket() {
+    const packet = _.cloneDeep(this.props.redPacket.packet)
+    if (this.state.pickBtnDisabled) {
+      return
+    }
+    if (packet.detailViews.length === 0) {
+      this.props.dispatch(packetAction('get'))
       return
     }
     if (this.move) {
@@ -87,15 +88,14 @@ export default class extends Component {
       pickBtnDisabled: true,
     })
     const { dispatch } = this.props
-    const packet = _.cloneDeep(this.props.redPacket.packet)
     console.log('pickPacket packet start ===> ', packet)
     const index = packet.detailViews.length - 1
     dispatch(packetAction('grab', packet.detailViews[index].id))
       .then(async res => {
         this.setState({
           isMoneyMove: true,
-          pickBtnDisabled: false,
         })
+        dispatch(action('user/balance'))
         packet.detailViews.splice(index, 1)
         if (packet.detailViews.length === 0) {
           try {
@@ -104,16 +104,11 @@ export default class extends Component {
             if (status === 1) {
               await setStorageShareTimes(0)
             }
-            dispatch(
-              packetAction('save', {
-                assistRecords: [],
-                canGrap: false,
-                detailViews: [],
-                recordView: {
-                  status,
-                },
+            this.props.dispatch(packetAction('get')).then(_ => {
+              this.setState({
+                pickBtnDisabled: false,
               })
-            )
+            })
             console.log('pickPacket result ===>', this)
           } catch (e) {
             console.log('pickPacket error ===> ', e)
@@ -122,9 +117,13 @@ export default class extends Component {
           this.moneyMove()
           dispatch(
             packetAction('save', {
-              ...packet,
+              packet,
             })
           )
+          this.setState({
+            pickBtnDisabled: false,
+          })
+          console.log('pick result ===> ', packet)
         }
       })
       .catch(e => {
@@ -137,56 +136,62 @@ export default class extends Component {
   async openPacket(e) {
     showWxLoading()
     this.isClickPacket = true
-    this.props.dispatch(packetAction('get'))
-    hideWxLoading()
+    this.props
+      .dispatch(packetAction('get'))
+      .then(_ => {
+        hideWxLoading()
+      })
+      .catch(e => {
+        hideWxLoading()
+      })
   }
   assistPacket() {
-    this.props.dispatch(packetAction('assist'))
+    showWxLoading()
+    this.props
+      .dispatch(packetAction('assist'))
+      .then(_ => {
+        this.setState({
+          showStatus: ASSIST_SUCCESS,
+        })
+        hideWxLoading()
+      })
+      .catch(e => {
+        this.props.dispatch(packetAction('get'))
+        console.log(e)
+        hideWxLoading()
+      })
   }
-  async checkPacket(nextProps) {
-    const { packet, sharePacket } = nextProps
-    console.log('checkPacket start ===> ', this.isClickPacket, packet, sharePacket)
+  async checkPacket({ sharePacket, packet, userInfo }) {
+    console.log('checkPacket start ===> ', this.isClickPacket, sharePacket, packet, userInfo)
     let showStatus = NONE
 
     try {
-      if (!packet) {
-        if (sharePacket.packetNo) {
-          showStatus = ASSIST_PACKET
-        }
-      } else {
-        const { canGrap, recordView, infoView } = packet
-        if (
-          (sharePacket.packetNo && infoView && (infoView.assisted || infoView.finished || infoView.self)) ||
-          this.isClickPacket
-        ) {
-          if (canGrap) {
-            showStatus = PICK_PACKET
-          } else if (recordView.packetNo) {
-            showStatus = SHOW_PACKET
-          } else {
-            showStatus = SHARE_PACKET
-            const status = recordView.status
+      const { canGrap, recordView, infoView } = packet
+      if (infoView && (!userInfo || (!infoView.assisted && !infoView.finished && !infoView.self))) {
+        showStatus = ASSIST_PACKET
+      } else if (
+        (infoView && (infoView.assisted || infoView.finished || infoView.self)) ||
+        this.isClickPacket
+      ) {
+        if (canGrap) {
+          showStatus = PICK_PACKET
+        } else if (recordView.packetNo) {
+          showStatus = SHOW_PACKET
+        } else {
+          showStatus = SHARE_PACKET
+          const status = recordView.status
 
-            if (status === 1) {
-              const resTimes = await getStorageShareTimes()
-              const shareTimes = resTimes.data
-              if (shareTimes >= shareTotalTimes) {
-                this.props.dispatch(packetAction('extra'))
-              } else {
-                this.setData({
-                  shareTimes,
-                })
-              }
+          if (status === 1) {
+            const resTimes = await getStorageShareTimes()
+            const shareTimes = resTimes.data
+            if (shareTimes >= shareTotalTimes) {
+              await this.props.dispatch(packetAction('extra'))
+            } else {
+              this.setState({
+                shareTimes,
+              })
             }
           }
-        } else if (
-          sharePacket.packetNo &&
-          infoView &&
-          !infoView.assisted &&
-          !infoView.finished &&
-          !infoView.self
-        ) {
-          showStatus = ASSIST_PACKET
         }
       }
 
@@ -213,7 +218,7 @@ export default class extends Component {
     })
   }
   getUserInfo(e) {
-    if (!this.props.userInfo) {
+    if (!this.props.app.userInfo) {
       showWxLoading()
       const { type } = e.currentTarget.dataset
       Taro.getApp().byGetUserInfo(e, () => {
@@ -272,21 +277,23 @@ export default class extends Component {
     countDown()
     this.countDown = setInterval(countDown, 1000)
   }
-  componentDidMount = async () => {
-    const { startBarHeight, navigationHeight } = await getNavHeight()
-    this.setState({
-      startBarHeight,
-      navigationHeight,
-    })
-  }
   componentWillReceiveProps = nextProps => {
-    this.checkPacket(nextProps.redPacket)
+    const {
+      app: { userInfo },
+      redPacket: { sharePacket, packet },
+    } = nextProps
+
+    if (packet) {
+      this.checkPacket({
+        sharePacket,
+        packet,
+        userInfo,
+      })
+    }
   }
 
   render() {
     const {
-      startBarHeight,
-      navigationHeight,
       oHour,
       oMin,
       oSec,
@@ -299,11 +306,9 @@ export default class extends Component {
     const {
       position,
       icon,
-      userInfo,
-      redPacket,
+      app: { userInfo },
+      redPacket: { packet, sharePacket },
     } = this.props
-
-    const { packet, sharePacket } = redPacket || {}
 
     const { recordView, detailViews, assistRecords } = packet || {}
 
@@ -346,8 +351,11 @@ export default class extends Component {
 
         </View>
         {showStatus !== NONE && (
-          <View className="packet" catchtouchmove="preventD" style={{top: (startBarHeight + navigationHeight) + 'px'}}>
+          <View className="packet" catchtouchmove="preventD">
             <View className="bg" />
+            {showStatus !== ASSIST_PACKET && (
+              <View className="close-bg" onClick={this.closePacket.bind(this)} />
+            )}
             <View className="light">
               <Image src="../../asset/images/ic_light@2x.png" />
             </View>
@@ -360,12 +368,7 @@ export default class extends Component {
                   </View>
                   <Image className="main-bg" src="../../asset/images/ic_redpocket2@2x.png" mode="widthFix"/>
                   <View className="tip">
-                    邀请
-                    <Text>3个</Text>
-                    好友，可获得
-                    <Text>3个</Text>
-                    红包，一起平分
-                    <Text>10000元</Text>
+                    邀请<Text>3个</Text>好友，你可获得<Text>3个</Text>红包，最高可得<Text>88元！</Text>
                   </View>
                   <View className="head">
                     <View className="item">
@@ -484,7 +487,7 @@ export default class extends Component {
                   </View>
                   <Image className="main-bg" src="../../asset/images/ic_redpocket@2x.png" mode="widthFix"/>
                   <View className="avatar">
-                    <Image src={sharePacket.avatar} />
+                    <Image src={decodeURIComponent(sharePacket.avatar)} />
                   </View>
                   <View className="userName">{sharePacket.userName}</View>
                   <View className="desc">帮我开下红包</View>
@@ -513,7 +516,7 @@ export default class extends Component {
 
             {showStatus === ASSIST_SUCCESS && (
               <View className="bag init assist-success">
-                <Text className="top-tip">送你3个现金红包 ↓↓↓</Text>
+                <Text className="top-tip">恭喜你帮开成功</Text>
                 <View className="main">
                   <View className="close" onClick={this.closePacket.bind(this)}>
                     <Image src="../../asset/images/ic_close@2x.png" />
@@ -524,27 +527,11 @@ export default class extends Component {
                     mode="widthFix"
                   />
                   <View className="success-tip">
-                    <Image src={sharePacket.avatar} />
-                    <Text>谢谢你帮我开了个大红包</Text>
+                    <Image src={decodeURIComponent(sharePacket.avatar)} />
+                    <Text>送你3个现金红包</Text>
                   </View>
                   <View className="tip">
-                    邀请
-                    <Text>3个</Text>
-                    好友，可获得
-                    <Text>3个</Text>
-                    红包，一起平分
-                    <Text>10000元</Text>
-                  </View>
-                  <View className="head">
-                    <View className="item">
-                      <Image src="../../asset/images/ic_q@2x.png" mode="widthFix" />
-                    </View>
-                    <View className="item">
-                      <Image src="../../asset/images/ic_q@2x.png" mode="widthFix" />
-                    </View>
-                    <View className="item">
-                      <Image src="../../asset/images/ic_q@2x.png" mode="widthFix" />
-                    </View>
+                    邀请<Text>3个</Text>好友，你可获得<Text>3个</Text>红包，最高可得<Text>88元！</Text>
                   </View>
                   <Button className="custom" openType="share" data-type="assist">
                     邀请好友帮我开红包

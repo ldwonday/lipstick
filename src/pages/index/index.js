@@ -3,7 +3,7 @@ import { connect } from '@tarojs/redux'
 import Taro, { Component } from '@tarojs/taro'
 import action from '../../utils/action'
 import config from '../../config'
-import { TopBar, NavBar, TopAddTip, Container, Packet, Card, Loading } from '../../components'
+import { User, NavBar, TopAddTip, Packet, Card, Loading } from '../../components'
 import './index.scss'
 
 const effectName = name => `article/${name}`
@@ -24,16 +24,18 @@ export default class extends Component {
     const options = this.$router.params
     console.log('index options ===>', options)
     const { packetNo, avatar, userName } = options
-    packetNo &&
-      this.props.dispatch(redPacketAction('save', { sharePacket: { packetNo, avatar, userName } }))
+    this.props.dispatch(redPacketAction('save', { sharePacket: (packetNo ? { packetNo, avatar, userName } : null) }))
     this.props.dispatch(articleAction('init'))
   }
   onReachBottom = () => {
     const { dispatch } = this.props
     dispatch(articleAction('loadMore'))
   }
-  onPullDownRefresh = async () => {
-    this.handleChangeData()
+  onPullDownRefresh = () => {
+    Taro.startPullDownRefresh()
+    this.handleChangeData().then(_ => {
+      Taro.stopPullDownRefresh()
+    })
   }
   onShareAppMessage = e => {
     const target = e.target
@@ -52,19 +54,19 @@ export default class extends Component {
     }
     return {
       title: config.appName,
-      path: `/routes/article/index`,
+      path: `/pages/index/index`,
     }
   }
   handleChangeData() {
     const { dispatch } = this.props
-    dispatch(articleAction('refresh'))
+    return dispatch(articleAction('refresh'))
   }
   refPacket(node) {
     this.packetCom = node
   }
   reportForm(e) {
     const { id } = e.currentTarget.dataset
-    const url = `/routes/detail/index?id=${id}&page=${this.props.article.page}`
+    const url = `/pages/detail/index?id=${id}&page=${this.props.article.page}`
     Taro.navigateTo({ url })
     this.props.dispatch(action('app/submitForm', e.detail.formId))
   }
@@ -86,9 +88,9 @@ export default class extends Component {
     const adDiff = 7
 
     return (
-      <View>
-        <TopBar isShowBack={false} balance={balance} />
-        <Container>
+      <block>
+        <User />
+        <View className="container">
           <TopAddTip />
           {isReFresh && <View className="update">已更新</View>}
           {isLoad ? (
@@ -129,8 +131,8 @@ export default class extends Component {
             position={packetProps.position}
             icon={packetProps.icon}
           />
-        </Container>
-      </View>
+        </View>
+      </block>
     )
   }
 }

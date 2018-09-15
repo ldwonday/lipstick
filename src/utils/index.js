@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro'
 import { formatDate } from './timeFormat'
-import { pages } from '../service/article'
+import { queryPages } from '../service/article'
 
 export const getNavHeight = async () => {
   let startBarHeight = 20
@@ -14,16 +14,16 @@ export const getNavHeight = async () => {
   }
   return {
     startBarHeight,
-    navigationHeight
+    navigationHeight,
   }
 }
-export const showModal = (content) => {
+export const showModal = content => {
   if (content) {
     return Taro.showModal({
       title: '提示',
       content,
       showCancel: false,
-      confirmText: '好的'
+      confirmText: '好的',
     })
   }
 }
@@ -33,7 +33,7 @@ export const showModalWithTitle = (title = '提示', content = '数据加载失�
       title,
       content,
       showCancel: false,
-      confirmText: '好的'
+      confirmText: '好的',
     })
   }
 }
@@ -49,7 +49,7 @@ export const hideWxLoading = () => {
   Taro.hideLoading()
 }
 
-export const getStorageSyncAppConfig = () => {
+/*export const getStorageSyncAppConfig = () => {
   return Taro.getStorageSync('appConfig')
 }
 export const getStorageAppConfig = async () => {
@@ -60,8 +60,8 @@ export const getStorageAppConfig = async () => {
     const res = await queryConfig()
     return res
   }
-}
-export const setStorageAppConfig = (result) => {
+}*/
+export const setStorageAppConfig = result => {
   return Taro.setStorage({ key: 'appConfig', data: result })
 }
 
@@ -71,7 +71,7 @@ export const getStorageSyncLoginResult = () => {
 export const getStorageLoginResult = () => {
   return Taro.getStorage({ key: 'loginResult' })
 }
-export const setStorageLoginResult = (result) => {
+export const setStorageLoginResult = result => {
   return Taro.setStorage({ key: 'loginResult', data: result })
 }
 
@@ -81,21 +81,21 @@ export const getStorageSynctUserInfo = () => {
 export const getStoragetUserInfo = () => {
   return Taro.getStorage({ key: 'userInfo' })
 }
-export const setStorageUserInfo = (info) => {
+export const setStorageUserInfo = info => {
   return Taro.setStorage({ key: 'userInfo', data: info })
 }
 
 export const getStorageProduct = () => {
   return Taro.getStorage({ key: 'product' })
 }
-export const setStorageProduct = (product) => {
+export const setStorageProduct = product => {
   return Taro.setStorage({ key: 'product', data: product })
 }
 
 export const getStorageShareCode = () => {
   return Taro.getStorage({ key: 'shareCode' })
 }
-export const setStorageShareCode = (shareCode) => {
+export const setStorageShareCode = shareCode => {
   return Taro.setStorage({ key: 'shareCode', data: shareCode })
 }
 
@@ -104,15 +104,15 @@ export const getStoragePages = async () => {
   try {
     res = await Taro.getStorage({ key: 'pages' })
   } catch (e) {
-    res = await pages()
+    res = await queryPages()
   }
   return res
 }
-export const setStoragePages = (pages) => {
+export const setStoragePages = pages => {
   return Taro.setStorage({ key: 'pages', data: pages })
 }
 
-export const setStorageShareTimes = (times) => {
+export const setStorageShareTimes = times => {
   return Taro.setStorage({ key: 'shareTimes', data: times })
 }
 
@@ -134,7 +134,7 @@ export const getStorageShareTimesInit = async () => {
     number: 0
   }
   try {
-    const { data }	= await getStorageShareTimes()
+    const { data }= await getStorageShareTimes()
     times = data
   } catch (e) {
     times = []

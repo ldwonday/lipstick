@@ -6,8 +6,8 @@ import { packetGet, packetExtra, packetGrab, packetAssist } from './service'
 export default modelExtend(model, {
   namespace: 'redPacket',
   state: {
-    sharePacket: {},
-    packet: {},
+    sharePacket: null,
+    packet: null,
   },
   reducers: {},
   effects: {
@@ -15,19 +15,19 @@ export default modelExtend(model, {
       yield put(action('get'))
     },
     *get({ payload }, { call, put, select }) {
-      const redPacket = yield select(state => state.redPacket)
-      const { data } = yield call(packetGet, redPacket.sharePacket.packetNo)
+      const sharePacket = yield select(state => state.redPacket.sharePacket)
+      const { data } = yield call(packetGet, sharePacket && sharePacket.packetNo)
       yield put(action('save', { packet: data }))
     },
     *grab({ payload }, { call, put }) {
-      yield call(packetGrab, { id: payload })
+      yield call(packetGrab, payload)
     },
     *assist({ payload }, { call, put, select }) {
-      const redPacket = yield select(state => state.redPacket)
-      yield call(packetAssist, redPacket && redPacket.sharePacket && redPacket.sharePacket.packetNo)
+      const sharePacket = yield select(state => state.redPacket.sharePacket)
+      yield call(packetAssist, sharePacket && sharePacket.packetNo)
     },
     *extra({ payload }, { call, put }) {
-      const res = yield call(packetExtra)
+      const res = yield call(packetExtra, 2)
       yield put(
         action('save', {
           packet: {

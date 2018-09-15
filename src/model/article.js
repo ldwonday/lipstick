@@ -2,7 +2,6 @@ import modelExtend from 'dva-model-extend'
 import action from '../utils/action'
 import delay from '../utils/delay'
 import { queryList, queryPages } from '../service/article'
-import { checkToken } from '../service'
 import { model } from './common'
 import { showWxLoading, hideWxLoading } from '../utils'
 
@@ -20,8 +19,7 @@ export default modelExtend(model, {
       yield put.resolve(action('pages'))
       yield put(action('list'))
 
-      yield put.resolve(action('app/checkToken'))
-      yield put(action('user/balance'))
+      yield put.resolve(action('user/balance'))
       yield put(action('redPacket/get'))
     },
     *pages({ payload }, { call, put }) {

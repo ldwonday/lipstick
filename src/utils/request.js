@@ -1,7 +1,7 @@
 import Taro from '@tarojs/taro'
 import dva from '../dva'
-import action from './action'
 import { hideWxLoading, showModal, getStorageSyncLoginResult } from './index'
+import action from './action'
 
 const makeOptions = (url, options) => {
   const defaultoptions = {
@@ -98,13 +98,21 @@ const request = (url, options) => {
             errorMessage: '系统异常，请查看response',
             res,
           }
-          if (data.code === 401) {
-            resolve(data)
-          }
           if (data && typeof data === 'object') {
             errors = Object.assign({}, errors, data)
           }
-          reject(errors)
+          if (data.code === 401) {
+            dva
+              .getDispatch()(action('app/login'))
+              .then(_ => {
+                resolve(request(url, options))
+              })
+              .catch(e => {
+                reject(e)
+              })
+          } else {
+            reject(errors)
+          }
         } else {
           resolve(data)
         }

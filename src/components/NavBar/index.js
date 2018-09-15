@@ -4,14 +4,14 @@ import './index.scss'
 
 export default class extends Component {
   state = {
-    routes: [
+    pages: [
       {
-        key: 'article/index',
+        key: 'index/index',
         active: true,
         name: '精选',
         icon: require('../../asset/images/index.png'),
         activeIcon: require('../../asset/images/index-red.png'),
-        path: '/routes/article/index',
+        path: '/pages/index/index',
       },
       {
         key: 'survey/index',
@@ -19,7 +19,7 @@ export default class extends Component {
         name: '测一测',
         icon: require('../../asset/images/survey.png'),
         activeIcon: require('../../asset/images/survey-red.png'),
-        path: '/routes/survey/index',
+        path: '/pages/survey/index',
       },
       {
         key: 'favourites/index',
@@ -27,7 +27,7 @@ export default class extends Component {
         name: '收藏',
         icon: require('../../asset/images/fav.png'),
         activeIcon: require('../../asset/images/fav-color.png'),
-        path: '/routes/favourites/index',
+        path: '/pages/favourites/index',
       },
     ],
   }
@@ -42,8 +42,8 @@ export default class extends Component {
       })
   }
   componentDidMount() {
-    const { routes } = this.state
-    routes.forEach(route => {
+    const { pages } = this.state
+    pages.forEach(route => {
       if (this.checkRoute(route.key)) {
         route.active = true
       } else {
@@ -51,14 +51,14 @@ export default class extends Component {
       }
     })
     this.setState({
-      routes,
+      pages,
     })
   }
   render() {
-    const { routes } = this.state
+    const { pages } = this.state
     return (
       <View className="navbar">
-        {routes.map(route => {
+        {pages.map(route => {
           const { key, name, icon, activeIcon, active, path } = route
           return (
             <View

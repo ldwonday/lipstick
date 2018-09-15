@@ -48,7 +48,7 @@
 		font-size: 36rpx;
 		font-weight: bold;
 		transform: translateX(-50%);
-		top: 300rpx;
+		top: 380rpx;
 		z-index: 9999;
 	}
 	.move{
@@ -56,12 +56,11 @@
 	}
 	@keyframes move {
 		from {
-			transform: scale(1);
+			transform: scale(1) translateY(60rpx);
+      opacity: 1;
 		}
 		to {
-			transform: scale(1.5);
-			left: 150rpx;
-			top: 60rpx;
+			transform: scale(1.5) translateY(-40rpx);
 		}
 	}
 	.light{
@@ -83,6 +82,7 @@
 		.num-tip{
 			right: 10rpx;
 			top: 0;
+      z-index: 99;
 		}
 		button{
 			width: 100%;
@@ -103,11 +103,17 @@
 		right: 0;
 		z-index: 9999;
 		.bg{
-			background: rgba(0, 0, 0, 0.7);
+			background: rgba(0, 0, 0, 0.8);
 			position: absolute;
 			width: 100%;
 			height: 100%;
 		}
+    .close-bg{
+      position: absolute;
+      width: 100%;
+      height: 260rpx;
+      bottom: 0;
+    }
 		.top-tip{
 			position: absolute;
 			top: 161rpx;
@@ -143,7 +149,7 @@
 				}
 				&.assist-success{
 					.success-tip{
-						font-size: 26rpx;
+						font-size: 36rpx;
 						color: #333333;
 						text-align: center;
 						line-height: 26rpx;
@@ -161,7 +167,7 @@
 						}
 					}
 					.tip{
-						margin-top: 264rpx;
+						margin-top: 320rpx;
 						margin-bottom: 31rpx;
 					}
 					.head{

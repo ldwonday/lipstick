@@ -9,8 +9,8 @@ export default modelExtend(model, {
   },
   effects: {
     *init({ payload }, { call, put, take }) {
-      yield put.resolve(action('app/checkToken'))
-      yield put(action('user/balance'))
+      /*yield put.resolve(action('app/checkToken'))
+      yield put(action('user/balance'))*/
     },
   },
   reducers: {},

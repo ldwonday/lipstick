@@ -5,12 +5,11 @@
 	justify-content: space-between;
 	align-items: center;
 	padding: 0 30rpx;
-	image.shouzhi{
-		width: 60rpx;
-		height: 60rpx;
+  font-weight: bold;
+	.shouzhi{
 		position: absolute;
 		right: 110rpx;
-		animation: beat 1s infinite;
+		animation: beat 0.5s infinite;
 	}
 	@keyframes beat {
 		0%{
@@ -22,9 +21,5 @@
 		100%{
 			top: 0;
 		}
-	}
-	image.close{
-		width: 36rpx;
-		height: 36rpx;
 	}
 }

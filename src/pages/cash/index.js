@@ -2,16 +2,15 @@ import { View, Image, Button, Form } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import Taro, { Component } from '@tarojs/taro'
 import action from '../../utils/action'
-import { TopBar, Container, Loading } from '../../components'
+import { Loading } from '../../components'
 import './index.scss'
 
 const effectName = name => `cash/${name}`
 const mappingAction = (name, payload) => action(effectName(name), payload)
 @connect(({ cash, user, loading }) => ({
-  ...cash,
-  ...user,
-  isLoading: loading.effects['cash/init'],
-  isLoadMore: loading.effects[effectName('loadMore')],
+  cash,
+  user,
+  loading,
 }))
 export default class extends Component {
   componentDidMount = async () => {
@@ -27,16 +26,17 @@ export default class extends Component {
     this.props.dispatch(
       mappingAction('withDraw', {
         formId,
-        amount: this.props.balance,
+        amount: this.props.user.balance,
       })
     )
   }
   render() {
-    const { isLoading, list, balance, withdrawAmount } = this.props
+    const { loading, cash: { list }, user: { balance, withdrawAmount } } = this.props
+
+    const isLoading = loading.effects['cash/init']
     return (
-      <View>
-        <TopBar isShowBack />
-        <Container>
+      <block>
+        <View>
           {isLoading ? (
             <Loading height="calc(100vh - 90rpx)" content="加载中..." />
           ) : (
@@ -76,8 +76,8 @@ export default class extends Component {
               </View>
             </block>
           )}
-        </Container>
-      </View>
+        </View>
+      </block>
     )
   }
 }

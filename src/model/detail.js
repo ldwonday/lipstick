@@ -18,7 +18,7 @@ export default modelExtend(model, {
     *init({ payload }, { call, put, take }) {
       const { id, page } = payload
       yield put.resolve(action('query', id))
-      yield put(action('list', Number(page)))
+      yield put(action('list', page))
     },
     *query({ payload }, { call, put }) {
       const { data } = yield query(payload)

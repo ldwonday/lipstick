@@ -23,7 +23,7 @@ class TopBar extends Component {
   }
   goCash() {
     Taro.navigateTo({
-      url: '/routes/cash/index',
+      url: '/pages/cash/index',
     })
   }
   goBack() {
