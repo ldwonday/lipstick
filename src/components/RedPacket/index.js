@@ -283,7 +283,12 @@ export default class extends Component {
       redPacket: { sharePacket, packet },
     } = nextProps
 
-    if (packet) {
+    if (
+      packet &&
+      (this.props.redPacket.packet !== packet ||
+        this.props.redPacket.sharePacket !== sharePacket ||
+        this.props.app.userInfo !== userInfo)
+    ) {
       this.checkPacket({
         sharePacket,
         packet,
