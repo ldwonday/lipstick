@@ -56,11 +56,7 @@ export default class extends Component {
   }
   closePacket() {
     this.isClickPacket = false
-
-    const packet = _.cloneDeep(this.props.redPacket.packet)
-    delete packet.infoView
-
-    this.props.dispatch(packetAction('save', { sharePacket: null, packet }))
+    this.props.dispatch(packetAction('clearShare'))
 
     if (this.countDown) {
       clearInterval(this.countDown)
@@ -133,7 +129,7 @@ export default class extends Component {
         })
       })
   }
-  async openPacket(e) {
+  openPacket() {
     showWxLoading()
     this.isClickPacket = true
     this.props
@@ -156,7 +152,8 @@ export default class extends Component {
         hideWxLoading()
       })
       .catch(e => {
-        this.props.dispatch(packetAction('get'))
+        this.isClickPacket = true
+        this.props.dispatch(packetAction('clearShare'))
         console.log(e)
         hideWxLoading()
       })
@@ -185,7 +182,7 @@ export default class extends Component {
             const resTimes = await getStorageShareTimes()
             const shareTimes = resTimes.data
             if (shareTimes >= shareTotalTimes) {
-              await this.props.dispatch(packetAction('extra'))
+              this.props.dispatch(packetAction('extra'))
             } else {
               this.setState({
                 shareTimes,

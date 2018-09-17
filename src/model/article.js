@@ -40,7 +40,7 @@ export default modelExtend(model, {
       hideWxLoading()
     },
     *refresh({ payload }, { select, call, put }) {
-      let { page, pages, list } = yield select(state => state.article)
+      let { page, pages } = yield select(state => state.article)
       page += 1
       const { data } = yield call(queryList, { page: pages[page] })
       yield put(action('save', { list: data, page }))

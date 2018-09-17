@@ -32,7 +32,6 @@ export default class extends Component {
     dispatch(articleAction('loadMore'))
   }
   onPullDownRefresh = () => {
-    Taro.startPullDownRefresh()
     this.handleChangeData().then(_ => {
       Taro.stopPullDownRefresh()
     })
