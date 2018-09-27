@@ -1,11 +1,8 @@
 import app from './app'
-import sys from './sys'
 import user from './user'
-import redPacket from './redPacket'
-import article from './article'
+import home from './home'
 import detail from './detail'
-import cash from './cash'
-import favourites from './favourites'
-import survey from './survey'
+import call from './call'
+import order from './order'
 
-export default [app, sys, article, user, redPacket, detail, cash, favourites, survey]
+export default [app, user, home, detail, call, order]

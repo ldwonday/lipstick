@@ -1,0 +1,87 @@
+@import '../../../asset/styles/import';
+card-container {
+  background: #FFFFFF;
+  box-shadow: 0 12px 32px 0 rgba(0,0,0,0.06);
+  border-radius: 20px;
+  width: 690px;
+  z-index: 1;
+  margin-top: calc(-750px + 451px);
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  margin-bottom: 63px;
+  .top{
+    flex-grow: 2;
+    padding: 30px;
+    .red-text{
+      color: $red;
+      font-size: 30px;
+    }
+    .btn-group{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 30px;
+      button{
+        width: 100%;
+        margin: 0;
+        font-size: 32px;
+        color: #FFFFFF;
+        text-align: center;
+        height: 90px;
+        background: $red;
+        border-radius: 45px;
+        line-height: 90px;
+        &.white{
+          border: 2px solid $red;
+          background: #fff;
+          color: $red;
+        }
+        + button{
+          margin-left: 30px;
+        }
+        &.zan{
+          iconfont{
+            margin-right: 20px;
+          }
+        }
+      }
+    }
+    .tip{
+      font-size: 26px;
+      color: $gray;
+      text-align: center;
+      margin-top: 60px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text{
+       color: $red;
+       font-size: 30px;
+      }
+    }
+  }
+  .call-list{
+    flex-shrink: 0;
+    padding: 10px 5px 30px;
+    border-top: 1px dashed #D8D8D8;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    .warp{
+      width: 98px;
+      height: 98px;
+      margin-left: 30px;
+      margin-top: 30px;
+      background: #F5F5F5;
+      border: 1px dashed #CBCBCB;
+      border-radius: 100%;
+    }
+    image{
+      width: 100%;
+      height: 100%;
+      border-radius: 100%;
+    }
+  }
+}

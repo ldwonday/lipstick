@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro'
 import dva from '../dva'
-import { hideWxLoading, showModal, getStorageSyncLoginResult } from './index'
+import { getStorageSyncLoginResult } from './index'
 import action from './action'
 
 const makeOptions = (url, options) => {
@@ -58,6 +58,9 @@ const addQs = (url, qs) => {
   return newUrl
 }
 
+// 失效重试次数
+let invalidTryTimes = 0
+
 const request = (url, options) => {
   const opts = makeOptions(url, options)
   const { method, body, headers, qs, type, contentType } = opts
@@ -71,9 +74,10 @@ const request = (url, options) => {
   }
   if (opts.customToken) {
     const res = getStorageSyncLoginResult()
+    const token = res && res.token
     header = {
       ...header,
-      'X-Custom-Token': res && res.token,
+      'X-Custom-Token': token,
     }
   }
 
@@ -101,9 +105,10 @@ const request = (url, options) => {
           if (data && typeof data === 'object') {
             errors = Object.assign({}, errors, data)
           }
-          if (data.code === 401) {
+          if (data.code === 401 && invalidTryTimes < 5) {
+            invalidTryTimes++
             dva
-              .getDispatch()(action('app/login'))
+              .getDispatch()(action('user/login'))
               .then(_ => {
                 resolve(request(url, options))
               })

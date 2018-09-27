@@ -1,72 +1,91 @@
-import modelExtend from 'dva-model-extend'
 import Taro from '@tarojs/taro'
+import modelExtend from 'dva-model-extend'
 import action from '../utils/action'
-import { queryList, query } from '../service/article'
+import { queryProduct, queryProductBarrage, commitOrder, retrieveOrder, newCall } from '../service'
 import { model } from './common'
-import { showWxLoading, hideWxLoading, getStoragePages } from '../utils'
-import { formatDate } from '../utils/timeFormat'
+import { hideWxLoading, showWxLoading, showModal } from '../utils'
 
 export default modelExtend(model, {
   namespace: 'detail',
   state: {
-    page: 0,
-    article: {},
-    previewImg: [],
-    list: [],
+    info: {},
+    barrages: [],
   },
   effects: {
-    *init({ payload }, { call, put, take }) {
-      const { id, page } = payload
-      yield put.resolve(action('query', id))
-      yield put(action('list', page))
+    *init({ payload }, { call, put }) {
+      yield put(action('barrages', payload))
+      yield put.resolve(action('query', payload))
     },
     *query({ payload }, { call, put }) {
-      const { data } = yield query(payload)
-      data.time = formatDate(new Date(data.time))
-      yield put(action('save', { article: data }))
+      const { data } = yield call(queryProduct, { id: payload, isNet: true })
+      yield put(action('save', { info: data }))
     },
-    *list({ payload }, { call, put, select }) {
-      const res = yield getStoragePages()
-      const pages = res.data
-      let page = payload === undefined ? Math.floor(Math.random() * pages.length) : payload
-      page += 1
-      const { data } = yield call(queryList, { page: pages[page] })
-      yield put(action('save', { list: data, page }))
+    *barrages({ payload }, { call, put }) {
+      const { data } = yield call(queryProductBarrage)
+      yield put(action('save', { barrages: data }))
     },
-    *saveFavourite({ payload }, { call, put, take }) {
-      let favourite = []
-      try {
-        const res = yield Taro.getStorage({ key: 'favourite' })
-        favourite = (res && res.data) || []
-      } catch (e) {
-        console.log(e)
-      }
-      const { nId } = payload
-      if (favourite.find(item => item.nId === nId)) {
-        Taro.showToast({
-          title: '文章已经收藏啦！',
-        })
-        return
-      }
-      favourite.push({
-        ...payload,
-        saveTime: formatDate(new Date()),
-      })
-      yield Taro.setStorage({ key: 'favourite', data: favourite })
-      Taro.showToast({
-        title: '收藏成功！',
-      })
-    },
-    *loadMore({ payload }, { select, call, put }) {
+    *newCall({ payload }, { call, put, select }) {
       showWxLoading()
-      const res = yield getStoragePages()
-      const pages = res.data
-      let { page, list } = yield select(state => state.detail)
-      page += 1
-      const { data } = yield call(queryList, { page: pages[page] })
-      yield put(action('save', { list: list.concat(data), page }))
-      hideWxLoading()
+      const {
+        info: { productId },
+      } = yield select(state => state.detail)
+      try {
+        const { data } = yield call(newCall, { productId, formId: payload })
+        Taro.navigateTo({ url: `/pages/call/index?recordNo=${data.recordNo}` })
+        hideWxLoading()
+      } catch (e) {
+        showModal(`数据加载失败：${e.detail}`)
+        hideWxLoading()
+      }
+    },
+    *buyProduct({ payload }, { call, put, select }) {
+      const {
+        info: { productId, mainImageUrl },
+      } = yield select(state => state.detail)
+      showWxLoading()
+      try {
+        const { data } = yield call(commitOrder, {
+          buyType: 1,
+          productId,
+          formId: payload,
+          shareCode: '',
+        })
+        const { orderNo, prePayResult } = data
+        let retrieveTimes = 0
+        const retrieve = () => {
+          retrieveTimes < 5 &&
+            retrieveOrder(orderNo).catch(e => {
+              retrieveTimes++
+              retrieve()
+              console.log('retrieveOrder error ===> ', e)
+            })
+        }
+        try {
+          yield Taro.requestPayment({
+            ...prePayResult,
+          })
+          Taro.navigateTo({ url: `/pages/paySuccess/index?imageUrl=${mainImageUrl}` })
+          retrieve()
+        } catch (e) {
+          if (e.errMsg.indexOf('cancel') !== -1) {
+          } else {
+            showModal(`支付失败(${e.detail})`)
+          }
+        } finally {
+          hideWxLoading()
+        }
+      } catch (e) {
+        hideWxLoading()
+        showModal(`获取订单信息失败(${e.detail})`)
+      }
     },
   },
-  reducers: {},
+  reducers: {
+    clear(state, { payload }) {
+      return {
+        info: {},
+        barrages: [],
+      }
+    },
+  },
 })

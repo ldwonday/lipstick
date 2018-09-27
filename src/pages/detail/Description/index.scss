@@ -1,0 +1,33 @@
+@import '../../../asset/styles/import';
+.desc {
+  width: 100%;
+  position: relative;
+  background: #fff;
+  height: 236px;
+  padding: 40px 20px;
+  .main{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .title{
+      color: $dark;
+      font-size: 36px;
+    }
+    .sale-num{
+      display: flex;
+      align-items: center;
+      font-size: 22px;
+      color: #9a9a9a;
+      .num{
+        font-size: 22px;
+        color: #FF5C21;
+        margin-right: 8px;
+      }
+    }
+  }
+  .subscribe{
+    font-size: 22px;
+    color: #9A9A9A;
+    margin-top: 14px;
+  }
+}

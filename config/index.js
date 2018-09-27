@@ -50,7 +50,9 @@ const config = {
       compileOnSave: false
     }
   },
-  defineConstants: {},
+  defineConstants: {
+    APP_NAME: '集赞换',
+  },
   copy: {
     patterns: [
       { from: 'src/asset/images', to: 'dist/asset/images' },

@@ -1,16 +1,18 @@
 import { connect } from '@tarojs/redux'
-import { View, Image, Text, Button, OpenData } from '@tarojs/components'
-import Taro, { Component } from '@tarojs/taro'
+import { View, Text, Button, OpenData } from '@tarojs/components'
+import Taro, { PureComponent } from '@tarojs/taro'
 import config from '../../config'
+import Behaviors from '../../utils/CommonBehavior'
 import './index.scss'
 
 @connect(({ app, user }) => ({
   app,
   user,
 }))
-class TopBar extends Component {
+class TopBar extends PureComponent {
+  static behaviors = [Behaviors]
   getUserInfo(e) {
-    Taro.getApp().byGetUserInfo(e, () => {
+    this.$scope.byGetUserInfo(e, () => {
       this.goCash()
     })
   }

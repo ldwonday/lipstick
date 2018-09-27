@@ -28,10 +28,10 @@ export const listPageModel = modelExtend(model, {
       const { isEnd, items, page } = data
       return {
         ...state,
-        list: items,
+        list: [...items],
         filter: {
+          ...filter,
           isEnd,
-          ...state.filter,
           ...page,
         },
       }

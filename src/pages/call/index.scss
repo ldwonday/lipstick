@@ -1,0 +1,80 @@
+@import '../../asset/styles/import';
+page{
+  background: #fff;
+}
+.bg{
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #E6E6E6;
+  top-blur-head{
+    width: 100%;
+  }
+  bottom-card{
+    position: relative;
+    z-index: 9;
+  }
+  .home{
+    position: fixed;
+    top: 30px;
+    right: 20px;
+    z-index: 999;
+    height: 60px;
+    border-radius: 10px;
+    line-height: 60px;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+    transition: all 0.3s;
+    &:active{
+      transform: scale(0.95);
+    }
+    iconfont{
+      display: block;
+      margin-right: 4px;
+    }
+  }
+  .head{
+    @include center-flex();
+    position: relative;
+    z-index: 99;
+    .sale-tip{
+      position: absolute;
+      bottom: 0;
+      min-width: 197px;
+      white-space: nowrap;
+      padding: 0 10px;
+      height: 36px;
+      background: #000;
+      font-size: 22px;
+      color: #fff;
+      text-align: center;
+      line-height: 36px;
+      border-radius: 18px;
+    }
+  }
+  .title{
+    z-index: 99;
+    margin-top: 33px;
+    width: 560px;
+    font-size: 40px;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 50px;
+  }
+}
+.zan{
+  font-size: 40px;
+  color: #FF5C21;
+}
+canvas{
+  position: fixed;
+  left: -10000px;
+  top: 0;
+}
+

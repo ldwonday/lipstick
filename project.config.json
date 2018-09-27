@@ -1,8 +1,8 @@
 {
 	"miniprogramRoot": "dist/",
-	"projectname": "article-mini-program-taro",
+	"projectname": "collect-zan-taro",
 	"description": "article",
-	"appid": "wx7bf430cf3065b8e0",
+	"appid": "wx1592bbf60aa6122c",
 	"setting": {
 		"urlCheck": true,
 		"es6": false,
@@ -11,7 +11,7 @@
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.3.0",
+	"libVersion": "1.9.97",
 	"condition": {
 		"search": {
 			"current": -1,
@@ -34,14 +34,33 @@
 				{
 					"id": 0,
 					"name": "share",
-					"pathName": "pages/index/index",
-					"query": "packetNo=8080103680746217&avatar=https://wx.qlogo.cn/mmopen/vi_32/ibgb3PCqwOgZywn9SLPpJue6FUkU4SDMY23ibeKMQdFC8QIMa7L8nNXXLHF1F45wuxuEmibk0QsLCZFYWq3WYlfyg/132&userName=雪啊"
+					"pathName": "pages/call/index",
+					"query": "scene={\"showHome\":\"1\",\"recordNo\":\"721930431946299\"}",
+					"scene": "1047"
 				},
 				{
 					"id": 1,
 					"name": "detail",
 					"pathName": "pages/detail/index",
-					"query": "id=2587"
+					"query": "id=3"
+				},
+				{
+					"id": 2,
+					"name": "分享",
+					"pathName": "pages/share/index",
+					"query": "image=https://wx2.sinaimg.cn/mw690/006oP3exly1ftcq765iutj30m80m8go2.jpg"
+				},
+				{
+					"id": -1,
+					"name": "order",
+					"pathName": "pages/mine/order/index",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "pay",
+					"pathName": "pages/paySuccess/index",
+					"query": ""
 				}
 			]
 		}

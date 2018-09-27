@@ -1,6 +1,5 @@
 import Taro from '@tarojs/taro'
 import { formatDate } from './timeFormat'
-import { queryPages } from '../service/article'
 
 export const getNavHeight = async () => {
   let startBarHeight = 20
@@ -99,21 +98,16 @@ export const setStorageShareCode = shareCode => {
   return Taro.setStorage({ key: 'shareCode', data: shareCode })
 }
 
-export const getStoragePages = async () => {
-  let res
-  try {
-    res = await Taro.getStorage({ key: 'pages' })
-  } catch (e) {
-    res = await queryPages()
-  }
-  return res
-}
-export const setStoragePages = pages => {
-  return Taro.setStorage({ key: 'pages', data: pages })
-}
-
 export const setStorageShareTimes = times => {
   return Taro.setStorage({ key: 'shareTimes', data: times })
+}
+
+export const setIsFirst = isFirst => {
+  return Taro.setStorage({ key: 'isFirst', data: isFirst })
+}
+
+export const getIsFirst = isFirst => {
+  return Taro.getStorage({ key: 'isFirst' })
 }
 
 export const getStorageShareTimes = async () => {
@@ -131,7 +125,7 @@ export const getStorageShareTimesInit = async () => {
   const currentDate = formatDate(new Date(), 'yyyy-MM-dd')
   const today = {
     time: currentDate,
-    number: 0
+    number: 0,
   }
   try {
     const { data }= await getStorageShareTimes()

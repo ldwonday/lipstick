@@ -1,33 +1,76 @@
 /* eslint-disable prettier/prettier */
 import config from '../config'
 import request from '../utils/request'
-import { setStorageProduct, getStorageProduct } from '../utils'
 
-const { product, barrage, login, balance, checkStatus, saveUserInfo, order, code, retrieve, pay, formSubmit } = config.api
+const { jz, product, barrage, login, balance, checkStatus, saveUserInfo, order, code, retrieve, pay, formSubmit } = config.api
 const baseQs = {
 	qs: {
 		appId: config.appId,
 	}
 }
-export const queryProduct = async (isNet = false) => {
-	let result
-	const queryProduct = async () => {
-		const res = await request(product.query, baseQs)
-		setStorageProduct(res)
-		return res
-	}
-	if (!isNet) {
-		try {
-			const res = await getStorageProduct()
-			result = res.data
-		} catch (e) {
-			result = queryProduct()
-		}
-	} else {
-		result = queryProduct()
-	}
-
-	return result
+export const queryProduct = async ({ id }) => {
+  return request(jz.productInfo(id), {
+    customToken: true,
+    showFailMsg: false,
+    ...baseQs,
+  })
+}
+export const getCallRecord = async ({ recordNo }) => {
+  return request(jz.getRecord(recordNo), {
+    customToken: true,
+    showFailMsg: false,
+    ...baseQs,
+  })
+}
+export const doCall = async ({ shareCode, recordNo }) => {
+  return request(jz.doCall, {
+    method: 'POST',
+    customToken: true,
+    showFailMsg: false,
+    ...baseQs,
+    body: {
+      shareCode,
+      recordNo,
+    }
+  })
+}
+export const getFinished = async ({ size = 7, page }) => {
+  return request(jz.mine.finished, {
+    customToken: true,
+    showFailMsg: false,
+    ...baseQs,
+  })
+}
+export const getNotFinish = async ({ size = 7, page }) => {
+  return request(jz.mine.notfinish, {
+    customToken: true,
+    showFailMsg: false,
+    ...baseQs,
+    qs: {
+      page,
+      size
+    },
+  })
+}
+export const newCall = async ({ productId, formId }) => {
+  return request(jz.newCall, {
+    method: 'POST',
+    customToken: true,
+    showFailMsg: false,
+    ...baseQs,
+    body: {
+      pid: productId,
+      formId,
+    }
+  })
+}
+export const queryProductList = ({ size, page }) => {
+  return request(jz.productList, {
+    qs: {
+      page,
+      size
+    },
+  })
 }
 export const queryConfigCheck = () => {
 	return request(config.api.config.check, { customToken: true, })
@@ -45,11 +88,10 @@ export const queryProductComment = ({ pageSize, pageNum, productId }) => {
 		},
 	})
 }
-export const queryProductBarrage = (productId) => {
+export const queryProductBarrage = () => {
 	return request(barrage.product, {
 		qs: {
 			...baseQs.qs,
-			productId
 		},
 	})
 }
@@ -61,7 +103,7 @@ export const queryProfitBarrage = (productId) => {
 		},
 	})
 }
-export const commitOrder = async (buyType, productId, formId, shareCode) => {
+export const commitOrder = async ({ buyType, productId, formId, shareCode }) => {
 	return request(order.commit, {
 		method: 'POST',
 		showFailMsg: false,
@@ -158,11 +200,4 @@ export const withDraw = async ({ amount, formId }) => {
 		},
 	})
 }
-/*export const queryByIds = (ids) => {
-	return request(article.queryByIds, {
-		qs: {
-			ids,
-		}
-	})
-}*/
 

@@ -1,13 +1,12 @@
-import { Component } from '@tarojs/taro'
+import { PureComponent } from '@tarojs/taro'
 import { Text } from '@tarojs/components'
-import _ from 'lodash'
 import classNames from 'classnames'
 import './index.scss'
 
-export default class Iconfont extends Component {
+export default class Iconfont extends PureComponent {
   static externalClasses = ['extra-class']
   render() {
-    const { size = 1, type = '', color } = this.props
+    const { size = 1, type = '', color = '#fff' } = this.props
     let Size = `${size}rpx`
     const c = classNames('iconfont', `icon-${type}`, 'extra-class')
 

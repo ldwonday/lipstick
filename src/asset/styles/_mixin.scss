@@ -1,6 +1,6 @@
 @mixin showup {
   opacity: 0.4;
-  transform: translate3d(0, 10rpx, 0);
+  transform: translate3d(0, 10px, 0);
   animation: showup 0.8s forwards ease-out;
 }
 @keyframes showup {
@@ -13,7 +13,7 @@
 }
 
 @mixin fadein {
-  transform: translate3d(0, 10rpx, 0);
+  transform: translate3d(0, 10px, 0);
   animation: fadein 0.8s forwards ease-out;
 }
 @keyframes fadein {
@@ -34,7 +34,7 @@
   }
   100% {
     opacity: 0;
-    transform: translate3d(0, 10rpx, 0);
+    transform: translate3d(0, 10px, 0);
     display: none;
   }
 }
