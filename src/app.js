@@ -30,7 +30,7 @@ class App extends Component {
     window: {
       backgroundTextStyle: 'dark',
       navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: '集赞领',
+      navigationBarTitleText: APP_NAME,
       navigationBarTextStyle: 'black',
     },
     tabBar: {

@@ -47,7 +47,7 @@ export default class extends PureComponent {
 
     this.ctx.drawImage(src, (imgW - canvasW) / 2, 0, canvasW, canvasH, 0, 0, canvasW, canvasH)
     if (this.freeGetIamge) {
-      this.ctx.drawImage(this.freeGetIamge, canvasW / 2 - 130, 260, 260, 56)
+      this.ctx.drawImage(this.freeGetIamge, canvasW / 2 - 130, 260, 240, 56)
     }
     this.ctx.draw(false, () => {
       setTimeout(() => {

@@ -7,7 +7,7 @@ export default class extends PureComponent {
     data: [],
   }
   handlePreview(index) {
-    const details = this.props.data
+    const details = this.props.data || []
     Taro.previewImage({
       current: details[index].imageUrl,
       urls: details,

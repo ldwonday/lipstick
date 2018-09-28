@@ -20,6 +20,47 @@ export default class extends PureComponent {
   componentDidMount = async () => {
     this.ctx = Taro.createCanvasContext('canvas', this.$scope)
   }
+  async handleSave() {
+    if (this.shareImage) {
+      await this.saveImage()
+      return
+    }
+    showWxLoading()
+    const {
+      call: { info },
+      user: { userInfo },
+    } = this.props
+
+    const mainRes = await Taro.getImageInfo({
+      src: info.mainImageUrl,
+    })
+    this.mainImage = mainRes.path
+
+    const qcodeRes = await Taro.getImageInfo({
+      src: `https://klqrcode.pptmbt.com/${config.appId}/${info.recordNo}.jpeg`,
+    })
+    this.qcodeImage = qcodeRes.path
+
+    const avatarRes = await Taro.getImageInfo({
+      src: userInfo.avatarUrl,
+    })
+    this.avatarImage = avatarRes.path
+
+    this.drawShareImage(() => {
+      setTimeout(async () => {
+        const res = await Taro.canvasToTempFilePath({
+          x: 0,
+          y: 0,
+          destWidth: this.shareWidth,
+          destHeight: this.shareHeight,
+          quality: 0.4,
+          canvasId: 'canvas',
+        })
+        this.shareImage = res.tempFilePath
+        await this.checkAuthAndSave()
+      }, 500)
+    })
+  }
   drawShareImage(cb) {
     const ctx = this.ctx
 
@@ -48,70 +89,34 @@ export default class extends PureComponent {
 
     ctx.draw(false, cb)
   }
-  async handleSave() {
-    showWxLoading()
-    if (this.shareImage) {
-      this.saveImage()
-      return
-    }
-    const {
-      call: { info },
-      user: { userInfo },
-    } = this.props
-
-    const mainRes = await Taro.getImageInfo({
-      src: info.mainImageUrl,
-    })
-    this.mainImage = mainRes.path
-
-    const qcodeRes = await Taro.getImageInfo({
-      src: `https://klqrcode.pptmbt.com/${config.appId}/${info.recordNo}.jpeg`,
-    })
-    this.qcodeImage = qcodeRes.path
-
-    const avatarRes = await Taro.getImageInfo({
-      src: userInfo.avatarUrl,
-    })
-    this.avatarImage = avatarRes.path
-
-    this.drawShareImage(async () => {
-      const res = await Taro.canvasToTempFilePath({
-        x: 0,
-        y: 0,
-        destWidth: this.shareWidth,
-        destHeight: this.shareHeight,
-        quality: 0.4,
-        canvasId: 'canvas',
+  async checkAuthAndSave() {
+    try {
+      await Taro.authorize({ scope: 'scope.writePhotosAlbum' })
+      hideWxLoading()
+      await this.saveImage()
+    } catch (e) {
+      hideWxLoading()
+      Taro.showModal({
+        title: '温馨提示',
+        content: '要允许【保存到相册】才能保存图片哦',
+        showCancel: false,
+        confirmText: '好哒',
+        success: modalRes => {
+          if (modalRes.confirm) {
+            Taro.openSetting({
+              success: async res => {
+                res.authSetting['scope.writePhotosAlbum']
+                  ? this.saveImage()
+                  : this.checkAuthAndSave()
+              },
+            })
+          }
+        },
       })
-      this.shareImage = res.tempFilePath
-      this.saveImage()
-    })
+    }
   }
   async saveImage() {
     try {
-      const setting = await Taro.getSetting()
-      console.log(222, setting)
-      if (!setting.authSetting['scope.writePhotosAlbum']) {
-        try {
-          await Taro.authorize({ scope: 'scope.writePhotosAlbum' })
-        } catch (e) {
-          Taro.showModal({
-            title: '温馨提示',
-            content: '要允许【保存到相册】才能保存图片哦',
-            showCancel: false,
-            confirmText: '好哒',
-            success: modalRes => {
-              if (modalRes.confirm) {
-                Taro.openSetting({
-                  success: aut_res => {
-                    this.saveImage()
-                  },
-                })
-              }
-            },
-          })
-        }
-      }
       await Taro.saveImageToPhotosAlbum({ filePath: this.shareImage })
       const modalRes = await Taro.showModal({
         content: '保存成功,长按图片就可以分享啦！',
@@ -126,7 +131,6 @@ export default class extends PureComponent {
       }
     } catch (e) {
       console.log(e)
-      hideWxLoading()
     }
   }
   onShareAppMessage = e => {
@@ -147,9 +151,13 @@ export default class extends PureComponent {
           <View className="main-bg">
             <Image src={info.mainImageUrl} />
           </View>
-          <AvatarTip avatarUrl={userInfo.avatarUrl}><View className="tip">还差你的赞我就可以免费领商品啦～</View></AvatarTip>
+          <AvatarTip avatarUrl={userInfo.avatarUrl}>
+            <View className="tip">还差你的赞我就可以免费领商品啦～</View>
+          </AvatarTip>
           <View className="bottom-qcode">
-            {info.recordNo && <Image src={`https://klqrcode.pptmbt.com/${config.appId}/${info.recordNo}.jpeg`} />}
+            {info.recordNo && (
+              <Image src={`https://klqrcode.pptmbt.com/${config.appId}/${info.recordNo}.jpeg`} />
+            )}
             <View className="tip">长按识别小程序，帮我点赞吧</View>
           </View>
         </CardContainer>

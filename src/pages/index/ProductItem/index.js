@@ -7,19 +7,14 @@ export default class extends PureComponent {
   static defaultProps = {
     data: {},
   }
-  navigateTo(url) {
-    Taro.navigateTo({ url })
-  }
   render() {
     const {
       data: { productName = '', saledNum = 0, bannerImage = '', price = 0 },
-      to,
     } = this.props
     return (
       <View
         hover-class="product-hover"
         className="product-item"
-        onClick={this.navigateTo.bind(this, to)}
       >
         <View className="sale">
           <Iconfont type="ic_gift" size={24} color="#FF5C21" />

@@ -1,4 +1,4 @@
-import { View, Text } from '@tarojs/components'
+import { View, Canvas, Text } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import Taro from '@tarojs/taro'
 import action from '../../utils/action'
@@ -19,6 +19,7 @@ export default class extends ShareImage {
     barrages: [],
   }
   state = {
+    showHome: false,
     loading: true,
     isShowModal: false,
   }
@@ -27,7 +28,11 @@ export default class extends ShareImage {
     if (scene) {
       scene = JSON.parse(decodeURIComponent(scene))
     }
-    const recordNo = this.$router.params.recordNo || scene.recordNo
+    const recordNo = this.$router.params.recordNo || (scene && scene.recordNo)
+    const showHome = this.$router.params.showHome || (scene && scene.showHome) || false
+    this.setState({
+      showHome: !!showHome,
+    })
     this.ctx = Taro.createCanvasContext('canvas', this.$scope)
     this.props.dispatch(mappingAction('init', { recordNo })).then(_ => {
       this.setState({
@@ -57,7 +62,6 @@ export default class extends ShareImage {
   }
   handleNewCall() {
     Taro.switchTab({ url: '/pages/index/index' })
-    /*Taro.navigateTo({ url: `/pages/detail/index?id=${this.props.info.productId}` })*/
   }
   handleChangeProduct() {
     this.setState({
@@ -72,6 +76,9 @@ export default class extends ShareImage {
   handleGoHome() {
     Taro.switchTab({ url: '/pages/index/index' })
   }
+  reportForm(e) {
+    this.props.dispatch(action('app/submitForm', e.detail.formId))
+  }
   render() {
     const {
       info,
@@ -79,9 +86,7 @@ export default class extends ShareImage {
       user: { userInfo },
     } = this.props
 
-    const { showHome } = this.$router.params
-
-    const { isShowModal, loading } = this.state
+    const { isShowModal, loading, showHome } = this.state
 
     const { productName, mainImageUrl, saledNum } = info
 
@@ -116,6 +121,7 @@ export default class extends ShareImage {
               onNewCall={this.handleNewCall.bind(this)}
               onChangeProduct={this.handleChangeProduct.bind(this)}
               onGoHome={this.handleGoHome.bind(this)}
+              onReportForm={this.reportForm.bind(this)}
             />
           </View>
         )}

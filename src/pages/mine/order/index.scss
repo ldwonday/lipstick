@@ -45,4 +45,13 @@ page{
     justify-content: center;
     align-items: center;
   }
+  button{
+    padding: 0;
+    border-radius: 0;
+    line-height: 1;
+    text-align: left;
+    background: #fff;
+    margin-bottom: 30px;
+    box-shadow: 0 12px 12px 0 rgba(0,0,0,0.02);
+  }
 }

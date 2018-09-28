@@ -6,20 +6,13 @@ export default class extends PureComponent {
   static defaultProps = {
     data: {},
   }
-  handleClick() {
-    const { recordNo } = this.props.data
-    Taro.navigateTo({
-      url: `/pages/call/index?recordNo=${recordNo}`,
-    })
-  }
-
   render() {
     const {
       data: { leftNum, status, productDesc, productName, mainImageUrl },
     } = this.props
 
     return (
-      <View className="order-item" hover-class="hover" onClick={this.handleClick.bind(this)}>
+      <View className="order-item" hover-class="hover">
         <View className="top">
           <View className="left">
             <Image src={mainImageUrl} />

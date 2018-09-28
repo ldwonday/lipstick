@@ -1,6 +1,5 @@
-import { View, ScrollView } from '@tarojs/components'
+import { View, ScrollView, Button, Form } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { AtTabs, AtTabsPane } from 'taro-ui'
 import Taro, { PureComponent } from '@tarojs/taro'
 import { Loading } from '../../../components'
 import OrderItem from './OrderItem'
@@ -48,6 +47,12 @@ export default class extends PureComponent {
   handleIndex() {
     Taro.switchTab({ url: '/pages/index/index' })
   }
+  reportForm(e) {
+    const { id } = e.currentTarget.dataset
+    const url = `/pages/call/index?recordNo=${id}`
+    Taro.navigateTo({ url })
+    this.props.dispatch(action('app/submitForm', e.detail.formId))
+  }
   render() {
     const {
       order: { finished, notFinish },
@@ -64,12 +69,21 @@ export default class extends PureComponent {
             tabList.map(item => {
               return (
                 item.key === current && (
-                  <block>
+                  <block key={item.key}>
                     {item.key === 1 &&
                       finished.items.length > 0 && (
                         <ScrollView scrollY onScrollToLower={this.onReachBottom}>
                           {finished.items.map((cur, index) => (
-                            <OrderItem key={index} data={cur} />
+                            <Form
+                              key={cur.recordNo}
+                              onSubmit={this.reportForm.bind(this)}
+                              reportSubmit
+                              data-id={cur.recordNo}
+                            >
+                              <Button className="custom" formType="submit">
+                                <OrderItem data={cur} />
+                              </Button>
+                            </Form>
                           ))}
                         </ScrollView>
                       )}
@@ -80,7 +94,16 @@ export default class extends PureComponent {
                       notFinish.items.length > 0 && (
                         <ScrollView scrollY onScrollToLower={this.onReachBottom}>
                           {notFinish.items.map((cur, index) => (
-                            <OrderItem key={index} data={cur} />
+                            <Form
+                              key={cur.recordNo}
+                              onSubmit={this.reportForm.bind(this)}
+                              reportSubmit
+                              data-id={cur.recordNo}
+                            >
+                              <Button className="custom" formType="submit">
+                                <OrderItem data={cur} />
+                              </Button>
+                            </Form>
                           ))}
                         </ScrollView>
                       )}

@@ -1,4 +1,4 @@
-import { View, Text, Button, Image } from '@tarojs/components'
+import { View, Text, Button, Form, Image } from '@tarojs/components'
 import Taro, { PureComponent } from '@tarojs/taro'
 import Behaviors from '../../../utils/CommonBehavior'
 import { AvatarTip, CardContainer, Iconfont } from '../../../components'
@@ -10,11 +10,12 @@ export default class extends PureComponent {
     data: {},
   }
   handleGetUserInfo(e) {
-    const { onCallZan, onNewCall } = this.props
+    const { onCallZan, onNewCall, onChangeProduct } = this.props
     const { type } = e.currentTarget.dataset
     this.$scope.saveUserInfo(e.detail.userInfo, () => {
       type === '1' && onCallZan()
       type === '2' && onNewCall()
+      type === '3' && onChangeProduct()
     })
   }
   render() {
@@ -25,8 +26,8 @@ export default class extends PureComponent {
       onCallZan,
       onNewCall,
       onChangeProduct,
+      onReportForm,
     } = this.props
-
 
     return (
       <CardContainer className="card-call">
@@ -67,76 +68,96 @@ export default class extends PureComponent {
                 </block>
               )}
           </AvatarTip>
-          <View className="btn-group">
-            {self &&
-              hasNum < needNum && (
-                <block>
-                  <Button className="custom" openType="share">
-                    分享给好友
-                  </Button>
-                  <Button className="custom white" onClick={onSharePYQ}>
-                    分享到朋友圈
-                  </Button>
-                </block>
-              )}
-
-            {self &&
-              hasNum === needNum && (
-                <Button className="custom" onClick={onChangeProduct}>
-                  兑换商品
-                </Button>
-              )}
-
-            {!self &&
-              !called &&
-              hasNum < needNum && (
-                <block>
-                  {userInfo && (
-                    <Button className="custom f zan" onClick={onCallZan}>
-                      <Iconfont type="ic_like" size={48} />
-                      为TA点赞
+          <Form
+            onSubmit={onReportForm}
+            reportSubmit
+          >
+            <View className="btn-group">
+              {self &&
+                hasNum < needNum && (
+                  <block>
+                    <Button className="custom" openType="share" formType="submit">
+                      分享给好友
                     </Button>
-                  )}
-                  {!userInfo && (
-                    <Button
-                      className="custom f"
-                      openType="getUserInfo"
-                      onGetUserInfo={this.handleGetUserInfo.bind(this)}
-                      data-type="1"
-                    >
-                      <Iconfont type="ic_like" size={46} />
-                      为TA点赞
+                    <Button className="custom white" formType="submit" onClick={onSharePYQ}>
+                      分享到朋友圈
                     </Button>
-                  )}
-                </block>
-              )}
-
-            {!self &&
-              called && (
-                <block>
-                  {userInfo && (
-                    <Button className="custom" onClick={onNewCall}>
-                      我也要发起{hasNum === needNum ? ' 免费领商品' : ''}
-                    </Button>
-                  )}
-                  {!userInfo && (
-                    <Button
-                      openType="getUserInfo"
-                      onGetUserInfo={this.handleGetUserInfo.bind(this)}
-                      className="custom"
-                      data-type="2"
-                    >
-                      我也要发起
-                    </Button>
-                  )}
-                  {hasNum < needNum && (
-                    <Button className="custom white" openType="share">
-                      帮TA分享
-                    </Button>
-                  )}
-                </block>
-              )}
-          </View>
+                  </block>
+                )}
+              {self &&
+                hasNum === needNum && (
+                  <block>
+                    {userInfo && (
+                      <Button className="custom" formType="submit" onClick={onChangeProduct}>
+                        兑换商品
+                      </Button>
+                    )}
+                    {!userInfo && (
+                      <Button
+                        openType="getUserInfo"
+                        className="custom"
+                        formType="submit"
+                        onGetUserInfo={this.handleGetUserInfo.bind(this)}
+                        data-type="3"
+                      >
+                        兑换商品
+                      </Button>
+                    )}
+                  </block>
+                )}
+              {!self &&
+                !called &&
+                hasNum < needNum && (
+                  <block>
+                    {userInfo && (
+                      <Button className="custom f zan" formType="submit" onClick={onCallZan}>
+                        <Iconfont type="ic_like" size={48} />
+                        为TA点赞
+                      </Button>
+                    )}
+                    {!userInfo && (
+                      <Button
+                        className="custom f"
+                        formType="submit"
+                        openType="getUserInfo"
+                        onGetUserInfo={this.handleGetUserInfo.bind(this)}
+                        data-type="1"
+                      >
+                        <Iconfont type="ic_like" size={46} />
+                        为TA点赞
+                      </Button>
+                    )}
+                  </block>
+                )}
+              {!self &&
+                called && (
+                  <block>
+                    {userInfo && (
+                      <Button formType="submit" className="custom" onClick={onNewCall}>
+                        我也要发起
+                        {hasNum === needNum ? ' 免费领商品' : ''}
+                      </Button>
+                    )}
+                    {!userInfo && (
+                      <Button
+                        openType="getUserInfo"
+                        formType="submit"
+                        onGetUserInfo={this.handleGetUserInfo.bind(this)}
+                        className="custom"
+                        data-type="2"
+                      >
+                        我也要发起
+                      </Button>
+                    )}
+                    {hasNum < needNum && (
+                      <Button formType="submit" className="custom white" openType="share">
+                        帮TA分享
+                      </Button>
+                    )}
+                  </block>
+                )}
+            </View>
+          </Form>
           {self && hasNum === 0 && <View className="tip">立刻分享给好友帮你点赞吧</View>}
           {((self && hasNum !== 0 && (hasNum < needNum || hasNum === needNum)) ||
             (!self && (hasNum === needNum || called))) && (

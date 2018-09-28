@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { model } from './common'
 import { setIsFirst, getIsFirst } from '../utils'
+import { submitForm } from '../service'
 import action from '../utils/action'
 
 export default modelExtend(model, {
@@ -28,6 +29,9 @@ export default modelExtend(model, {
     *changeIsFirst({ payload }, { put }) {
       yield setIsFirst(payload)
       yield put(action('save', { isFirst: payload }))
+    },
+    *submitForm({ payload }, { call, put }) {
+      yield call(submitForm, payload)
     },
   },
 })
