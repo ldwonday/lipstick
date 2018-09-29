@@ -1,7 +1,7 @@
 import Taro from '@tarojs/taro'
 import modelExtend from 'dva-model-extend'
 import action from '../utils/action'
-import { queryProduct, queryProductBarrage, commitOrder, retrieveOrder, newCall } from '../service'
+import { queryProduct, queryEmptyBarrage, commitOrder, retrieveOrder, newCall } from '../service'
 import { model } from './common'
 import { hideWxLoading, showWxLoading, showModal } from '../utils'
 
@@ -17,11 +17,11 @@ export default modelExtend(model, {
       yield put.resolve(action('query', payload))
     },
     *query({ payload }, { call, put }) {
-      const { data } = yield call(queryProduct, { id: payload, isNet: true })
+      const { data } = yield call(queryProduct, { id: payload })
       yield put(action('save', { info: data }))
     },
     *barrages({ payload }, { call, put }) {
-      const { data } = yield call(queryProductBarrage)
+      const { data } = yield call(queryEmptyBarrage)
       yield put(action('save', { barrages: data }))
     },
     *newCall({ payload }, { call, put, select }) {
@@ -31,7 +31,7 @@ export default modelExtend(model, {
       } = yield select(state => state.detail)
       try {
         const { data } = yield call(newCall, { productId, formId: payload })
-        Taro.navigateTo({ url: `/pages/call/index?recordNo=${data.recordNo}` })
+        Taro.navigateTo({ url: `/pages/call/index?recordNo=${data.recordNo}&notShowHome=1` })
         hideWxLoading()
       } catch (e) {
         showModal(`数据加载失败：${e.detail}`)

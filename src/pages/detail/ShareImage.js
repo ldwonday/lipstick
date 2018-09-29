@@ -1,3 +1,4 @@
+/* global ZF_IMAGE */
 import Taro, { PureComponent } from '@tarojs/taro'
 
 export default class extends PureComponent {
@@ -30,7 +31,7 @@ export default class extends PureComponent {
   }
   async getShareImage(imageUrl) {
     const res = await Taro.getImageInfo({
-      src: 'https://klimg.pptmbt.com/pub/fz/free-get.png',
+      src: ZF_IMAGE + 'free-get.png',
     })
     this.freeGetIamge = res.path
     return Taro.getImageInfo({

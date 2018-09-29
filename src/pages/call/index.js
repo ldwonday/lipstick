@@ -2,6 +2,7 @@ import { View, Canvas, Text } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import Taro from '@tarojs/taro'
 import action from '../../utils/action'
+import { showModal } from '../../utils'
 import { Loading, CustomModal, Barrage, Head, TopBlurHead, Iconfont } from '../../components'
 import BottomCard from './BottomCard'
 import ShareImage from '../detail/ShareImage'
@@ -19,36 +20,37 @@ export default class extends ShareImage {
     barrages: [],
   }
   state = {
-    showHome: false,
     loading: true,
     isShowModal: false,
   }
   componentDidMount = () => {
     let scene = this.$router.params.scene
     if (scene) {
-      scene = JSON.parse(decodeURIComponent(scene))
+      scene = decodeURIComponent(scene)
     }
-    const recordNo = this.$router.params.recordNo || (scene && scene.recordNo)
-    const showHome = this.$router.params.showHome || (scene && scene.showHome) || false
-    this.setState({
-      showHome: !!showHome,
-    })
-    this.ctx = Taro.createCanvasContext('canvas', this.$scope)
-    this.props.dispatch(mappingAction('init', { recordNo })).then(_ => {
-      this.setState({
-        loading: false,
+    console.log('componentDidMount ===>', this.$router.params)
+    const recordNo = this.$router.params.recordNo || scene
+    if (recordNo) {
+      this.ctx = Taro.createCanvasContext('canvas', this.$scope)
+      this.props.dispatch(mappingAction('init', { recordNo })).then(_ => {
+        this.setState({
+          loading: false,
+        })
       })
-    })
+    } else {
+      showModal({
+        title: '缺少参数',
+      })
+    }
   }
   componentWillUnmount = () => {
     this.props.dispatch(mappingAction('clear'))
   }
   onShareAppMessage = e => {
     const { recordNo } = this.$router.params
-    const info = this.props.user.userInfo
-    const pTitle = this.props.info.productName || ''
+    const { productName = '', nickName = '' } = this.props.info
     return {
-      title: `${(info && info.nickName) || ''}邀你一起免费拿【${pTitle}】`,
+      title: `${nickName}邀你一起免费拿【${productName}】`,
       path: `/pages/call/index?recordNo=${recordNo}&showHome=1`,
       imageUrl: this.shareImage,
     }
@@ -86,7 +88,9 @@ export default class extends ShareImage {
       user: { userInfo },
     } = this.props
 
-    const { isShowModal, loading, showHome } = this.state
+    const { isShowModal, loading } = this.state
+
+    const { notShowHome } = this.$router.params
 
     const { productName, mainImageUrl, saledNum } = info
 
@@ -97,7 +101,7 @@ export default class extends ShareImage {
         ) : (
           <View className="bg">
             <Barrage data={barrages} />
-            {showHome && (
+            {!notShowHome && (
               <View className="home" onClick={this.handleGoHome.bind(this)}>
                 <Iconfont type="ic_home" size={32} />
                 返回首页

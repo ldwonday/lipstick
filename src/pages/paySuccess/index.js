@@ -13,7 +13,6 @@ export default class extends PureComponent {
     Taro.showToast({ title: '复制成功' })
   }
   render() {
-    console.log(this.$router.params)
     return (
       <View className="pay-success">
         <TopBlurHead imageUrl={this.$router.params.imageUrl}>

@@ -5,21 +5,19 @@ const config = {
   deviceRatio: {
     '640': 2.34 / 2,
     '750': 1,
-    '828': 1.81 / 2
+    '828': 1.81 / 2,
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
   plugins: {
     babel: {
       sourceMap: true,
-      presets: [
-        'env'
-      ],
+      presets: ['env'],
       plugins: [
         'transform-class-properties',
         'transform-decorators-legacy',
-        'transform-object-rest-spread'
-      ]
+        'transform-object-rest-spread',
+      ],
     },
     typescript: {
       compilerOptions: {
@@ -39,19 +37,16 @@ const config = {
         rootDir: '.',
         sourceMap: true,
         strictNullChecks: true,
-        target: 'es6'
+        target: 'es6',
       },
-      include: [
-        'src/**/*'
-      ],
-      exclude: [
-        'node_modules'
-      ],
-      compileOnSave: false
-    }
+      include: ['src/**/*'],
+      exclude: ['node_modules'],
+      compileOnSave: false,
+    },
   },
   defineConstants: {
     APP_NAME: '集赞换',
+    ZF_IMAGE: 'https://klimg.pptmbt.com/pub/fz/',
   },
   copy: {
     patterns: [
@@ -65,14 +60,14 @@ const config = {
     module: {
       postcss: {
         autoprefixer: {
-          enable: true
+          enable: true,
         },
         url: {
           enable: true,
-          limit: 10240
-        }
-      }
-    }
+          limit: 10240,
+        },
+      },
+    },
   },
   h5: {
     publicPath: '/',
@@ -80,11 +75,11 @@ const config = {
     module: {
       postcss: {
         autoprefixer: {
-          enable: true
-        }
-      }
-    }
-  }
+          enable: true,
+        },
+      },
+    },
+  },
 }
 
 module.exports = function (merge) {

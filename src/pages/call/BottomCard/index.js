@@ -55,8 +55,7 @@ export default class extends PureComponent {
 
             {!self &&
               hasNum < needNum &&
-              called && <block>谢谢你帮我点赞，你也发起一个免费领商品吧^_^</block>
-            }
+              called && <block>谢谢你帮我点赞，你也发起一个免费领商品吧^_^</block>}
 
             {!self &&
               hasNum < needNum &&
@@ -130,7 +129,7 @@ export default class extends PureComponent {
                   </block>
                 )}
               {!self &&
-                called && (
+                (called || hasNum === needNum) && (
                   <block>
                     {userInfo && (
                       <Button formType="submit" className="custom" onClick={onNewCall}>
@@ -166,7 +165,7 @@ export default class extends PureComponent {
             </View>
           )}
 
-          {!self && !called && hasNum <= needNum && <View className="tip">为TA点赞即可助攻啦～</View>}
+          {!self && !called && hasNum < needNum && <View className="tip">为TA点赞即可助攻啦～</View>}
         </View>
         <View className="call-list">
           {needNum.map((item, i) => {

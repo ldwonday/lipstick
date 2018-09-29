@@ -1,3 +1,4 @@
+/* global APP_NAME */
 import Taro, { Component } from '@tarojs/taro'
 import { Provider } from '@tarojs/redux'
 import '@tarojs/async-await'

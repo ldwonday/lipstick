@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import action from '../utils/action'
-import { queryProductBarrage, getCallRecord, doCall } from '../service'
+import { queryEmptyBarrage, getCallRecord, doCall } from '../service'
 import { hideWxLoading, showModal, showWxLoading } from '../utils'
 import { model } from './common'
 
@@ -36,7 +36,7 @@ export default modelExtend(model, {
       }
     },
     *barrages({ payload }, { call, put }) {
-      const { data } = yield call(queryProductBarrage)
+      const { data } = yield call(queryEmptyBarrage)
       yield put(action('save', { barrages: data }))
     },
   },

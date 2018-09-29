@@ -16,6 +16,7 @@ const makeOptions = (url, options) => {
     credentials: undefined,
     customToken: false,
     showFailMsg: true,
+    async: false,
   }
 
   let thisoptions = {}
@@ -105,7 +106,7 @@ const request = (url, options) => {
           if (data && typeof data === 'object') {
             errors = Object.assign({}, errors, data)
           }
-          if (data.code === 401 && invalidTryTimes < 5) {
+          if (data.code === 401 && invalidTryTimes < 5 && !opts.async) {
             invalidTryTimes++
             dva
               .getDispatch()(action('user/login'))
@@ -116,6 +117,7 @@ const request = (url, options) => {
                 reject(e)
               })
           } else {
+            console.log('request error ===>', errors)
             reject(errors)
           }
         } else {
@@ -123,6 +125,7 @@ const request = (url, options) => {
         }
       })
       .catch(err => {
+        console.log('request error ===>', err)
         reject({
           error: -1,
           message: '系统异常，请查看response',

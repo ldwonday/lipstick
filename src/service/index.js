@@ -103,6 +103,14 @@ export const queryProfitBarrage = (productId) => {
 		},
 	})
 }
+export const queryEmptyBarrage = (productId) => {
+  return request(barrage.empty, {
+    qs: {
+      ...baseQs.qs,
+      productId
+    },
+  })
+}
 export const commitOrder = async ({ buyType, productId, formId, shareCode }) => {
 	return request(order.commit, {
 		method: 'POST',
@@ -130,6 +138,7 @@ export const saveUser = async (userInfo, shareCode = '') => {
 	return request(saveUserInfo, {
 		method: 'POST',
 		customToken: true,
+    async: true,
 		qs: {
 			...baseQs.qs,
 			shareCode
@@ -182,6 +191,7 @@ export const submitForm = async (formId) => {
   return request(formSubmit(formId), {
     customToken: true,
     showFailMsg: false,
+    async: true,
     qs: {
       ...baseQs.qs,
     },

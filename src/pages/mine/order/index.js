@@ -49,7 +49,7 @@ export default class extends PureComponent {
   }
   reportForm(e) {
     const { id } = e.currentTarget.dataset
-    const url = `/pages/call/index?recordNo=${id}`
+    const url = `/pages/call/index?recordNo=${id}&notShowHome=1`
     Taro.navigateTo({ url })
     this.props.dispatch(action('app/submitForm', e.detail.formId))
   }

@@ -29,4 +29,7 @@ export default {
   getDispatch() {
     return App.dispatch
   },
+  getStore() {
+    return App.getStore()
+  },
 }

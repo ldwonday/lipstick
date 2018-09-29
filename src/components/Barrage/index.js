@@ -68,7 +68,7 @@ export default class extends PureComponent {
                 </View>
                 <View className="content">
                   <Text>{nickName}</Text>
-                  <Text>{text}</Text>
+                  <Text>{text}集赞成功</Text>
                 </View>
               </View>
             )
