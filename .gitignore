@@ -20,6 +20,5 @@ Thumbs.db
 .nyc_output
 data/commands.json
 yarn.lock
-config.js
 /sketch
 /dist
