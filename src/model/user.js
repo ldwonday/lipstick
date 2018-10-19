@@ -2,8 +2,10 @@ import modelExtend from 'dva-model-extend'
 import Taro from '@tarojs/taro'
 import action from '../utils/action'
 import { model } from './common'
-import { userLogin, saveUser, checkToken } from '../service'
-import { setStorageLoginResult, setStorageUserInfo } from '../utils'
+import { wxService } from '../service'
+import { setStorageLoginResult, setStorageUserInfo, getStorageShareCode } from '../utils'
+
+const { mp } = wxService
 
 export default modelExtend(model, {
   namespace: 'user',
@@ -19,12 +21,14 @@ export default modelExtend(model, {
       }
     },
     *checkToken({ payload }, { call, put }) {
-      yield call(checkToken)
+      yield call(mp.checkToken)
     },
     *login({ payload }, { call, put }) {
       const { code } = yield Taro.login()
-      const { data } = yield call(userLogin, code)
+      console.log(code)
+      const { data } = yield call(mp.login, code)
       yield setStorageLoginResult(data)
+      yield put(action('saveUser'))
     },
     *saveUser({ payload }, { call, put }) {
       try {
@@ -33,14 +37,24 @@ export default modelExtend(model, {
         const userInfo = res.userInfo
         yield setStorageUserInfo(userInfo)
 
+        let shareCode = ''
         try {
-          yield call(saveUser, other)
+          const data = yield getStorageShareCode()
+          console.log('getStorageShareCode ===>', data)
+          shareCode = data.data
+        } catch (e) {
+          console.log('getStorageShareCode ===>', e)
+        }
+
+        try {
+          yield call(mp.saveUser, other, shareCode)
           console.log('save user ok!!')
         } catch (e) {
           console.log('save user error ===> ', e)
         }
         yield put(action('save', { userInfo }))
       } catch (e) {
+        console.log(e)
         console.log('getUserInfo error: not auth')
       }
     },

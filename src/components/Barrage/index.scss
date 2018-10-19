@@ -3,11 +3,11 @@
   position: fixed;
   left: 0;
   top: 0;
-  background: #FFFFFF;
-  border-radius: 100px;
-  color: $dark;
+  color: #fff;
   font-size: 24px;
-  height: 56px;
+  height: 70px;
+  border-radius: 40px;
+  background-image: linear-gradient(269deg, rgba(0, 0, 0, 0.33), rgba(0, 0, 0, 0.8));
   z-index: 999;
   display: flex;
   justify-content: center;
@@ -17,10 +17,10 @@
     display: flex;
     align-items: center;
     image{
-      width: 40px;
-      height: 40px;
+      width: 58px;
+      height: 58px;
       border-radius: 100%;
-      margin-right: 10px;
+      margin-right: 6px;
     }
   }
 }

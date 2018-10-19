@@ -1,39 +1,30 @@
-import { View, Form, Button } from '@tarojs/components'
+import { View, Form, Button, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import Taro, { PureComponent } from '@tarojs/taro'
 import action from '../../utils/action'
-import { Card, Loading } from '../../components'
-import ProductItem from './ProductItem'
+import { Loading } from '../../components'
+import pageWithData from '../../common/PageWithData'
+import ListItem from './ListItem'
+import TitleShareImage from '../../asset/images/img-title-share.png'
 import './index.scss'
 
-const effectName = name => `home/${name}`
-const mappingAction = (name, payload) => action(effectName(name), payload)
-@connect(({ home, user, loading }) => ({
+@pageWithData('home')
+@connect(({ home, user }) => ({
   home,
   userInfo: user.userInfo,
-  isLoadMore: loading.effects[effectName('loadMore')],
 }))
 export default class extends PureComponent {
-  state = {
-    loading: true,
-  }
   config = {
     enablePullDownRefresh: true,
-  }
-  componentDidMount = () => {
-    this.props.dispatch(mappingAction('init')).then(_ => {
-      this.setState({
-        loading: false,
-      })
-    })
+    navigationBarTitleText: '商品列表',
   }
   onReachBottom = () => {
     const { dispatch } = this.props
-    dispatch(mappingAction('loadMore'))
+    dispatch(this.mappingAction('loadMore'))
   }
   onPullDownRefresh = () => {
     const { dispatch } = this.props
-    dispatch(mappingAction('list')).then(_ => {
+    dispatch(this.mappingAction('list')).then(_ => {
       Taro.stopPullDownRefresh()
     })
   }
@@ -54,35 +45,35 @@ export default class extends PureComponent {
     const {
       isLoadMore,
       home: { list },
+      loading,
     } = this.props
-
-    const { loading } = this.state
 
     return (
       <block>
-        <Card title="精选福利">
-          {loading ? (
-            <Loading height="100vh" />
-          ) : (
-            <block>
-              {list &&
-                list.map(item => (
-                  <Form
-                    key={item.pid}
-                    onSubmit={this.reportForm.bind(this)}
-                    reportSubmit
-                    data-id={item.pid}
-                  >
-                    <Button className="custom" formType="submit">
-                      <ProductItem data={item} />
-                    </Button>
-                  </Form>
-                ))}
-            </block>
-          )}
-          {isLoadMore && <Loading height="150rpx" />}
-        </Card>
-        {!loading && <View className="tip">更多福利 每周更新^_^</View>}
+        <View className="top-title">
+          <View className="title">精选福利</View>
+          <View className="right-bar"><Image src={TitleShareImage} /></View>
+        </View>
+        {loading ? (
+          <Loading height="100vh" />
+        ) : (
+          <View className="products">
+            {list &&
+              list.map(item => (
+                <Form
+                  key={item.pid}
+                  onSubmit={this.reportForm.bind(this)}
+                  reportSubmit
+                  data-id={item.pid}
+                >
+                  <Button className="custom" formType="submit">
+                    <ListItem data={item} />
+                  </Button>
+                </Form>
+              ))}
+          </View>
+        )}
+        {isLoadMore && <Loading height="150rpx" />}
       </block>
     )
   }

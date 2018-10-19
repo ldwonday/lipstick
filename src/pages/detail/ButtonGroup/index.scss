@@ -2,10 +2,10 @@
 .btn-group {
   width: 100%;
   position: fixed;
-  z-index: 9999;
+  z-index: 9998;
   bottom: 0;
   left: 0;
-  background: #fff;
+  background: #f7f7fa;
   height: 120px;
   .form{
     height: 100%;
@@ -29,23 +29,45 @@
         justify-content: center;
       }
       &:active{
-        transform: scale(1);
+        transform: none;
         .inner{
-          transform: scale(0.95);
+          transform: scale(0.96);
           transition: 0.3s all;
         }
       }
     }
-    .buy{
-      color: #8E5F50;
-      width: 30%;
+    .buy, .share{
+      color: #f7f7fa;
+      width: 36%;
+      background: #f4aba7;
       .price{
-        font-size: 44px;
+        font-size: 40px;
         font-weight: 500;
-        color: #8E5F50;
+        display: flex;
+        justify-content: center;
+        align-items: start;
         .unit{
-          font-size: 22px;
+          font-size: 28px;
+          margin-top: 4px;
         }
+      }
+      .bottom-tip{
+        font-size: 26px;
+      }
+    }
+
+    .home{
+      font-size: 20px;
+      color: #4e606a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 28%;
+      image{
+        margin-bottom: 10px;
+        height: 50px;
+        width: 50px;
       }
     }
 
@@ -55,12 +77,8 @@
     }
 
     .share{
-      background: #FF5C21;
-      width: 70%;
-      color: #fff;
-      .call{
-        font-size: 36px;
-      }
+      background: #ff312a;
+      width: 36%;
     }
   }
 }

@@ -1,122 +1,81 @@
-import { View, ScrollView, Button, Form } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import Taro, { PureComponent } from '@tarojs/taro'
-import { Loading } from '../../../components'
+import pageWithData from '../../../common/PageWithData'
+import { Loading, CustomModal } from '../../../components'
 import OrderItem from './OrderItem'
-import Tab from './Tab'
 import action from '../../../utils/action'
-import config from '../../../config'
 import './index.scss'
 
-const effectName = name => `order/${name}`
-const mappingAction = (name, payload) => action(effectName(name), payload)
+@pageWithData('order')
 @connect(({ order }) => ({
-  order,
+  ...order,
 }))
 export default class extends PureComponent {
   config = {
+    navigationBarTitleText: '我购买的商品',
     enablePullDownRefresh: true,
   }
   state = {
-    loading: true,
-    current: 0,
-    tabList: [{ title: '未完成', key: 0 }, { title: '已完成', key: 1 }],
+    isShowModal: false,
   }
-  componentDidMount = () => {
-    this.props.dispatch(mappingAction('init')).then(_ => {
-      this.setState({
-        loading: false,
-      })
-    })
-  }
-  onReachBottom = () => {
+  onReachBottom() {
     const { dispatch } = this.props
-    dispatch(mappingAction('loadMore', this.state.current))
+    dispatch(this.mappingAction('loadMore'))
   }
-  onPullDownRefresh = () => {
+  onPullDownRefresh() {
     const { dispatch } = this.props
-    dispatch(mappingAction('init')).then(_ => {
+    dispatch(this.mappingAction('init')).then(_ => {
       Taro.stopPullDownRefresh()
-    })
-  }
-  handleClick(index) {
-    this.setState({
-      current: index,
     })
   }
   handleIndex() {
     Taro.switchTab({ url: '/pages/index/index' })
   }
-  reportForm(e) {
-    const { id } = e.currentTarget.dataset
-    const url = `/pages/call/index?recordNo=${id}&notShowHome=1`
+  handleDetail(orderNo, formId) {
+    const url = `/pages/order/detail/index?orderNo=${orderNo}`
     Taro.navigateTo({ url })
-    this.props.dispatch(action('app/submitForm', e.detail.formId))
+    this.props.dispatch(action('app/submitForm', formId))
+  }
+  changeModalState(status) {
+    this.setState({
+      isShowModal: status,
+    })
   }
   render() {
-    const {
-      order: { finished, notFinish },
-    } = this.props
+    const { list, loading } = this.props
 
-    const { tabList, current, loading } = this.state
+    const { isShowModal } = this.state
 
     return (
       <View className="order">
-        <Tab current={current} tabList={tabList} onClick={this.handleClick.bind(this)}>
-          {loading ? (
-            <Loading height="80vh" />
-          ) : (
-            tabList.map(item => {
-              return (
-                item.key === current && (
-                  <block key={item.key}>
-                    {item.key === 1 &&
-                      finished.items.length > 0 && (
-                        <ScrollView scrollY onScrollToLower={this.onReachBottom}>
-                          {finished.items.map((cur, index) => (
-                            <Form
-                              key={cur.recordNo}
-                              onSubmit={this.reportForm.bind(this)}
-                              reportSubmit
-                              data-id={cur.recordNo}
-                            >
-                              <Button className="custom" formType="submit">
-                                <OrderItem data={cur} />
-                              </Button>
-                            </Form>
-                          ))}
-                        </ScrollView>
-                      )}
-                    {item.key === 1 &&
-                      finished.items.length === 0 && <View className="no-data">暂无数据</View>}
-
-                    {item.key === 0 &&
-                      notFinish.items.length > 0 && (
-                        <ScrollView scrollY onScrollToLower={this.onReachBottom}>
-                          {notFinish.items.map((cur, index) => (
-                            <Form
-                              key={cur.recordNo}
-                              onSubmit={this.reportForm.bind(this)}
-                              reportSubmit
-                              data-id={cur.recordNo}
-                            >
-                              <Button className="custom" formType="submit">
-                                <OrderItem data={cur} />
-                              </Button>
-                            </Form>
-                          ))}
-                        </ScrollView>
-                      )}
-                    {item.key === 0 &&
-                      notFinish.items.length === 0 && <View className="no-data">暂无数据</View>}
-                  </block>
-              ))
-            })
-          )}
-        </Tab>
-        <View className="more" onClick={this.handleIndex.bind(this)}>
-          发现更多商品
-        </View>
+        {loading ? (
+          <Loading height="100vh" />
+        ) : (
+          <block>
+            {list.map(cur => (
+              <OrderItem
+                key={cur}
+                data={cur}
+                onContact={this.changeModalState.bind(this, true)}
+                onDetail={this.handleDetail.bind(this)}
+              />
+            ))}
+            <CustomModal
+              isShow={isShowModal}
+              title="温馨提示"
+              openType="contact"
+              btnText="立刻加微信"
+              onClose={this.changeModalState.bind(this, false)}
+            >
+              <View className="modal-content">
+                <Text>进入客服消息回复</Text>
+                <Text className="modal-red-text">"微信"</Text>
+                <Text>即可获取卖家微信</Text>
+              </View>
+            </CustomModal>
+          </block>
+        )}
       </View>
     )
   }

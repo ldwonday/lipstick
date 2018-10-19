@@ -12,7 +12,7 @@ const dvaApp = dva.createApp({
   initialState: {},
   models,
   onError(e, dispatch) {
-    dispatch(action('sys/error', e))
+    console.log(111, e)
   },
 })
 const store = dvaApp.getStore()
@@ -22,11 +22,15 @@ class App extends Component {
     pages: [
       'pages/index/index',
       'pages/detail/index',
-      'pages/paySuccess/index',
-      'pages/call/index',
-      'pages/share/index',
+      'pages/order/confirm/index',
+      'pages/order/detail/index',
+      'pages/detail/comment/index',
       'pages/mine/index',
       'pages/mine/order/index',
+      'pages/mine/profit/index',
+      'pages/mine/profit/detail/index',
+      'pages/mine/address/index',
+      'pages/mine/address/edit/index',
     ],
     window: {
       backgroundTextStyle: 'dark',
@@ -42,14 +46,14 @@ class App extends Component {
         {
           pagePath: 'pages/index/index',
           text: '首页',
-          iconPath: './asset/images/ic_shop_normal@2x.png',
-          selectedIconPath: './asset/images/ic_shop_pressed@2x.png',
+          iconPath: './asset/images/btn-home-default.png',
+          selectedIconPath: './asset/images/btn-home-selected.png',
         },
         {
           pagePath: 'pages/mine/index',
           text: '我的',
-          iconPath: './asset/images/ic_my_normal@2x.png',
-          selectedIconPath: './asset/images/ic_my_pressed@2x.png',
+          iconPath: './asset/images/btn-mine-default.png',
+          selectedIconPath: './asset/images/btn-mine-selected.png',
         },
       ],
     },

@@ -12,7 +12,7 @@ page {
 button{
 	transition: all 0.3s;
 	&:active{
-		transform: scale(0.95);
+		transform: scale(0.96);
 	}
   &.card-btn{
     text-align: left;
@@ -35,7 +35,6 @@ button{
 	&.custom{
 		&:active{
 			background: none;
-			transform: scale(0.95);
 			&:after{
 				background: none;
 				border: none;
@@ -59,8 +58,38 @@ button{
 		color: #FFFFFF;
 		text-align: center;
 	}
+  &.red{
+    background: #FF312A;
+    padding: 0px 88px;
+    line-height: 80px;
+    border-radius: 80px;
+    font-size: 34px;
+    color: #ECECEC;
+    &:active{
+      background: #FF312A;
+    }
+  }
 }
 .button-hover{
-	background: none;
-	border: none;
+  transform: scale(0.96);
+  background: #FF312A;
+}
+
+.line1px{
+  width: 100%;
+  position: relative;
+  border-top: 1px solid #e5e5e5;
+}
+@media (-webkit-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5){
+  .line1px{
+    -webkit-transform: scaleY(0.7);
+    transform: scaleY(0.7);
+  }
+}
+
+@media (-webkit-min-device-pixel-ratio: 2),(min-device-pixel-ratio: 2){
+  .line1px{
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+  }
 }

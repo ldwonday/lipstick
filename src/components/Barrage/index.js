@@ -20,7 +20,7 @@ export default class extends PureComponent {
   }
   animationFun() {
     const { curIndex } = this.state
-    const { data } = this.props
+    const { data = [] } = this.props
     let index = curIndex === data.length - 1 ? 0 : curIndex
     this.animation
       .opacity(0)

@@ -12,7 +12,6 @@ export default class Iconfont extends PureComponent {
 
     const s = {
       fontSize: Size,
-      lineHeight: Size,
       minWidth: Size,
       display: 'inline-block',
       color,

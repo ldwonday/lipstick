@@ -1,5 +1,5 @@
 const config = {
-  projectName: 'article-mini-program-taro',
+  projectName: 'collect-zan-taro',
   date: '2018-9-7',
   designWidth: 750,
   deviceRatio: {
@@ -45,8 +45,8 @@ const config = {
     },
   },
   defineConstants: {
-    APP_NAME: '集赞换',
-    ZF_IMAGE: 'https://klimg.pptmbt.com/pub/fz/',
+    APP_NAME: '集赞领',
+    ZF_IMAGE: 'https://klimg.pptmbt.com/pub/jz/',
   },
   copy: {
     patterns: [
@@ -61,6 +61,11 @@ const config = {
       postcss: {
         autoprefixer: {
           enable: true,
+        },
+        pxtransform: {
+          selectorBlackList: [
+            /^.van-.*?$/
+          ]
         },
         url: {
           enable: true,

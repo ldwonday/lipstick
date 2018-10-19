@@ -1,8 +1,8 @@
 {
 	"miniprogramRoot": "dist/",
-	"projectname": "collect-zan-taro",
+	"projectname": "congregation-taro",
 	"description": "article",
-	"appid": "wx1592bbf60aa6122c",
+	"appid": "wx49821973c5425740",
 	"setting": {
 		"urlCheck": true,
 		"es6": false,
@@ -29,20 +29,20 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 11,
 			"list": [
 				{
 					"id": 0,
 					"name": "share",
 					"pathName": "pages/call/index",
-					"query": "scene=795282022946242",
+					"query": "scene=102934413946208",
 					"scene": "1047"
 				},
 				{
 					"id": 1,
 					"name": "detail",
 					"pathName": "pages/detail/index",
-					"query": "id=3"
+					"query": "id=1"
 				},
 				{
 					"id": 2,
@@ -61,6 +61,48 @@
 					"name": "pay",
 					"pathName": "pages/paySuccess/index",
 					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "order",
+					"pathName": "pages/mine/order/index",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "address",
+					"pathName": "pages/mine/address/index",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "address-edit",
+					"pathName": "pages/mine/address/edit/index",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "profit",
+					"pathName": "pages/mine/profit/index",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "profit-detail",
+					"pathName": "pages/mine/profit/detail/index",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "orderConfirm",
+					"pathName": "pages/orderConfirm/index",
+					"query": "id=1"
+				},
+				{
+					"id": 11,
+					"name": "order/detail",
+					"pathName": "pages/order/detail/index",
+					"query": "orderNo=P288983820046257"
 				}
 			]
 		}

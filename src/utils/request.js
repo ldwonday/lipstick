@@ -2,6 +2,7 @@ import Taro from '@tarojs/taro'
 import dva from '../dva'
 import { getStorageSyncLoginResult } from './index'
 import action from './action'
+import config from '../config'
 
 const makeOptions = (url, options) => {
   const defaultoptions = {
@@ -28,7 +29,7 @@ const makeOptions = (url, options) => {
       thisoptions.url = url
     }
   }
-  thisoptions = Object.assign({}, defaultoptions, thisoptions)
+  thisoptions = Object.assign({}, defaultoptions, thisoptions, { qs: { ...thisoptions.qs, appId: config.appId } })
 
   return thisoptions
 }
@@ -61,6 +62,7 @@ const addQs = (url, qs) => {
 
 // 失效重试次数
 let invalidTryTimes = 0
+let token
 
 const request = (url, options) => {
   const opts = makeOptions(url, options)
@@ -74,8 +76,10 @@ const request = (url, options) => {
     header = Object.assign({}, headers, { 'content-type': contentType })
   }
   if (opts.customToken) {
-    const res = getStorageSyncLoginResult()
-    const token = res && res.token
+    if (!token) {
+      const res = getStorageSyncLoginResult()
+      token = res && res.token
+    }
     header = {
       ...header,
       'X-Custom-Token': token,
@@ -108,6 +112,7 @@ const request = (url, options) => {
           }
           if (data.code === 401 && invalidTryTimes < 5 && !opts.async) {
             invalidTryTimes++
+            token = null
             dva
               .getDispatch()(action('user/login'))
               .then(_ => {

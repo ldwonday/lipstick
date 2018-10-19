@@ -8,9 +8,10 @@ export default class extends PureComponent {
   }
   handlePreview(index) {
     const details = this.props.data || []
+    console.log(details[index].imageUrl)
     Taro.previewImage({
-      current: details[index].imageUrl,
-      urls: details,
+      current: details[index] && details[index].imageUrl,
+      urls: details.map(item => item.imageUrl),
     })
   }
   render() {

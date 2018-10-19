@@ -12,7 +12,7 @@ export default class extends Component {
   }
 
   render() {
-    const { title, padding, titleColor } = this.props
+    const { title, padding, titleColor = '#fff' } = this.props
     const s = {
       padding: '20rpx',
     }
@@ -20,7 +20,6 @@ export default class extends Component {
       <View className="card">
         {title ? (
           <View className="header">
-            <View className="indicator" />
             <View className="title" style={{ color: titleColor }}>
               {title}
             </View>

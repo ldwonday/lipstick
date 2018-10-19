@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro'
 import { formatDate } from './timeFormat'
+import Notify from '../components/vant-weapp/dist/notify/notify'
 
 export const getNavHeight = async () => {
   let startBarHeight = 20
@@ -48,6 +49,15 @@ export const hideWxLoading = () => {
   Taro.hideLoading()
 }
 
+export const showNotify = (text, selector) => {
+  Notify({
+    text,
+    duration: 1500,
+    selector,
+    backgroundColor: '#E64340',
+  })
+}
+
 /*export const getStorageSyncAppConfig = () => {
   return Taro.getStorageSync('appConfig')
 }
@@ -91,11 +101,25 @@ export const setStorageProduct = product => {
   return Taro.setStorage({ key: 'product', data: product })
 }
 
+export const getProductShareTimes = () => {
+  return Taro.getStorage({ key: 'productShareTimes' })
+}
+export const setProductShareTimes = productShareTimes => {
+  return Taro.setStorage({ key: 'productShareTimes', data: productShareTimes })
+}
+
 export const getStorageShareCode = () => {
   return Taro.getStorage({ key: 'shareCode' })
 }
 export const setStorageShareCode = shareCode => {
   return Taro.setStorage({ key: 'shareCode', data: shareCode })
+}
+
+export const getStorageEditAddress = () => {
+  return Taro.getStorage({ key: 'editAddress' })
+}
+export const setStorageEditAddress = shareCode => {
+  return Taro.setStorage({ key: 'editAddress', data: shareCode })
 }
 
 export const setStorageShareTimes = times => {

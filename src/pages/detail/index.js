@@ -1,94 +1,138 @@
-import { View, Canvas } from '@tarojs/components'
+import { View, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import Taro from '@tarojs/taro'
-import action from '../../utils/action'
-import { Card, Loading, Barrage } from '../../components'
+import Taro, { PureComponent } from '@tarojs/taro'
+import { getProductShareTimes, setProductShareTimes } from '../../utils'
+import { Card, Loading, Barrage, Iconfont } from '../../components'
 import Banner from './Banner'
 import Content from './Content'
 import Description from './Description'
 import ButtonGroup from './ButtonGroup'
-import Guide from './Guide'
-import ShareImage from './ShareImage'
+import PopShare from './PopShare'
+import pageWithData from '../../common/PageWithData'
+import MessageItem from './MessageItem'
+import FloatImage from '../../asset/images/img_float_redbag.gif'
 import './index.scss'
 
-const effectName = name => `detail/${name}`
-const mappingAction = (name, payload) => action(effectName(name), payload)
-@connect(({ detail, user, app }) => ({
+@pageWithData('detail')
+@connect(({ detail, user }) => ({
   ...detail,
   user,
-  isFirst: app.isFirst,
 }))
-export default class extends ShareImage {
+export default class extends PureComponent {
+  config = {
+    navigationBarTitleText: '商品详情',
+  }
   static defaultProps = {
     info: {},
     barrages: [],
   }
   state = {
-    loading: true,
+    isShowPopShare: false,
+    currentShareTimes: 0,
   }
-  componentDidMount = () => {
-    this.ctx = Taro.createCanvasContext('canvas', this.$scope)
-    this.props.dispatch(mappingAction('init', this.$router.params.id)).then(_ => {
-      this.setState({
-        loading: false,
+  componentDidMount() {
+    getProductShareTimes()
+      .then(({ data }) => {
+        try {
+          this.allProductShareTimes = JSON.parse(data)
+          this.setState({
+            currentShareTimes: this.allProductShareTimes[this.$router.params.id] || 0,
+          })
+        } catch (e) {
+          console.log(e)
+          this.allProductShareTimes = {}
+        }
       })
-    })
+      .catch(e => {
+        this.allProductShareTimes = {}
+      })
   }
-  componentWillUnmount = () => {
-    this.props.dispatch(mappingAction('clear'))
-  }
-  onShareAppMessage = e => {
+  onShareAppMessage() {
     const info = this.props.user.userInfo
     const pTitle = this.props.info.name || ''
     return {
       title: `${(info && info.nickName) || ''}邀你一起免费拿【${pTitle}】`,
-      path: `/pages/index/index`,
+      path: `/pages/detail/index?id=${this.props.info.productId}`,
       imageUrl: this.shareImage,
+      success: () => {
+        const addTimes = this.state.currentShareTimes + 1
+        this.allProductShareTimes[this.$router.params.id] = addTimes
+        this.setState({
+          currentShareTimes: addTimes,
+        })
+        setProductShareTimes(JSON.stringify(this.allProductShareTimes))
+      },
     }
   }
-  handleCollect(formId) {
-    this.props.dispatch(mappingAction('newCall', formId))
+  handleBuyProduct(type) {
+    Taro.navigateTo({
+      url: `/pages/order/confirm/index?id=${this.props.info.productId}&buyType=${type}`,
+    })
   }
-  handleBuyProduct(formId) {
-    this.props.dispatch(mappingAction('buyProduct', formId))
+  handleClosePopShare() {
+    this.setState({
+      isShowPopShare: false,
+    })
   }
-  handleCloseGuide() {
-    this.props.dispatch(action('app/changeIsFirst', false))
+  handleOpenPopShare() {
+    this.setState({
+      isShowPopShare: true,
+    })
+  }
+  handleMoreComment() {
+    Taro.navigateTo({
+      url: `/pages/detail/comment/index?id=${this.props.info.productId}`,
+    })
   }
   render() {
     const {
+      loading,
       info = {},
       barrages,
-      isFirst,
+      comments,
       user: { userInfo },
     } = this.props
 
-    const { loading } = this.state
+    const { isShowPopShare, currentShareTimes } = this.state
 
     const { banners = [], detailList, ...desc } = info
 
     return (
       <View>
         {loading ? (
-          <Loading height="80vh" />
+          <Loading height="100vh" />
         ) : (
           <block>
-            <Guide isShow={isFirst} onClose={this.handleCloseGuide.bind(this)} />
-            <Barrage data={barrages} />
+            <PopShare isShow={isShowPopShare} onClose={this.handleClosePopShare.bind(this)} />
+            <Barrage data={barrages} position={{ left: '30rpx', top: '115rpx' }} />
             <Banner data={banners} />
             <Description data={desc} />
-            <Card title="商品详情" titleColor="#000">
+            <Card title="用户留言">
+              <View className="more" onClick={this.handleMoreComment.bind(this)}>
+                更多
+                <Iconfont type="previewright" size={18} color="#9b9b9b" />
+              </View>
+              <View className="comments">
+                {comments.map(item => (
+                  <MessageItem key={item} data={item} />
+                ))}
+              </View>
+            </Card>
+            <Card title="商品详情" className="detail-card">
               <Content data={detailList} />
             </Card>
             <ButtonGroup
               isAuthorize={!!userInfo}
               data={desc}
+              currentShareTimes={currentShareTimes}
+              needShareTimes={info.needShareTimes}
               onBuy={this.handleBuyProduct.bind(this)}
-              onCollect={this.handleCollect.bind(this)}
             />
+            <View className="float-share" onClick={this.handleOpenPopShare.bind(this)}>
+              <Image src={FloatImage} />
+            </View>
           </block>
         )}
-        <Canvas canvasId="canvas" style={{ width: '640px', height: '640px' }} />
       </View>
     )
   }

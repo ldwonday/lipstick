@@ -1,25 +1,27 @@
 @import "../../asset/styles/import";
-page{
-  background: #fff;
+.top-title{
+  height: 104px;
+  background-color: #ffffff;
+  font-size: 44px;
+  color: #4a4a4a;
+  padding: 18px 25px 18px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .right-bar{
+    width: 166px;
+    height: 50px;
+    image{
+      width: 100%;
+      height: 100%;
+    }
+  }
 }
-
 button{
   padding: 0;
   border-radius: 0;
   line-height: 1;
   background: #fff;
-  margin-bottom: 60px;
+  margin-bottom: 20px;
   text-align: left;
-  box-shadow: 0 12px 12px 0 rgba(0,0,0,0.06);
-}
-form:last-child{
-  button{
-    margin-bottom: 0;
-  }
-}
-.tip{
-  color: $gray;
-  font-size: 26px;
-  padding: 60px 0;
-  text-align: center;
 }
