@@ -61,6 +61,9 @@ export default class extends PureComponent {
           currentShareTimes: addTimes,
         })
         setProductShareTimes(JSON.stringify(this.allProductShareTimes))
+        if (addTimes === this.props.info.needShareTimes) {
+          this.handleBuyProduct('2')
+        }
       },
     }
   }

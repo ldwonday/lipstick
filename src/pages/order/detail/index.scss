@@ -10,51 +10,52 @@ $lineWidth: calc(100vw - 60px - 147px - 130px*2 + 40px);
     border-radius: 10px;
     height: 200px;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: column;
     padding-left: 76px;
     padding-right: 71px;
     padding-top: 50px;
     .point-line{
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
+      margin-bottom: 24px;
+      justify-content: space-between;
+      padding: 0 65px;
       .point{
-        margin-bottom: 24px;
-        width: 24px;
-        height: 24px;
-        background: #fd8927;
-        border-radius: 100%;
-        position: relative;
-        z-index: 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        &:after{
+          content: " ";
+          position: absolute;
+          width: 24px;
+          height: 24px;
+          background: #fd8927;
+          border-radius: 100%;
+        }
         &.active:before{
           position: absolute;
           width: 40px;
           height: 40px;
           background: #fd8927;
           opacity: 0.2;
-          left: -7px;
-          top: -7px;
           content: " ";
           border-radius: 100%;
           z-index: 1;
         }
       }
-      &+ .point-line{
-        &:before{
-          content: " ";
-          transform: translateX(-50%);
-          margin-left: -40px;
-          position: absolute;
-          top: 12px;
-          width: $lineWidth;
-          border-top: 1px dotted #fd8927;
-        }
+      .point-split{
+        margin: 0 40px;
+        width: 100%;
+        border-top: 1px dotted #fd8927;
       }
-      .point-text{
-        text-align: center;
+    }
+    .point-text{
+      display: flex;
+      justify-content: space-between;
+      .status-text{
         width: 130px;
+        text-align: center;
       }
     }
   }

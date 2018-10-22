@@ -25,7 +25,7 @@ export default class extends PureComponent {
           reportSubmit
           data-id={orderNo}
         >
-          <Button className="custom item" formType="submit">
+          <Button className="custom item">
             <ProductItem price={amount} name={productName} image={imageUrl} count={count} />
           </Button>
         </Form>

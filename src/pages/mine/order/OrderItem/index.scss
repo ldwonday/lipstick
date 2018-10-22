@@ -3,14 +3,14 @@
   background: #fff;
   margin-top: 24px;
   .item{
-    background: #fff;
     text-align: left;
     padding: 0;
     &:active{
       transform: none !important;
-      background: #f5f5f5 !important;
+      background: #000 !important;
     }
     &.button-hover{
+      background: #000 !important;
       transform: none !important;
     }
   }

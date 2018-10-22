@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import config from '../../config'
+import config from '../../../config'
 import request from '../../utils/request'
 
 const { balance } = config.api

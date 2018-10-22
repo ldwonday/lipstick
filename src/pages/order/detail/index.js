@@ -35,11 +35,12 @@ export default class extends PureComponent {
             <View className="top">
               <View className="point-line">
                 <View className="point" />
-                <View className="point-text">付款成功</View>
-              </View>
-              <View className="point-line">
+                <View className="point-split"></View>
                 <View className="point active" />
-                <View className="point-text">钱款已交由 小程序托管</View>
+              </View>
+              <View className="point-text">
+                <View className="status-text">付款成功</View>
+                <View className="status-text">钱款已交由 小程序托管</View>
               </View>
             </View>
             <View className="bottom">
