@@ -11,16 +11,6 @@ export default {
   appId,
   kefu: 'cxm19880710',
   api: {
-    article: {
-      list: `${articleApiPrefix}article/list`,
-      pages: `${articleApiPrefix}article/pages`,
-      query: id => `${articleApiPrefix}article/${id}`,
-      queryByIds: `${articleApiPrefix}queryByIds`,
-    },
-    config: {
-      check: `${apiPrefix}config/check?v=v${version}&appId=${appId}`,
-      init: `${apiPrefix}config/init/${appId}`,
-    },
     balance: {
       detail: `${apiPrefix}balance/detail`,
       query: `${apiPrefix}balance`,
