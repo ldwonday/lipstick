@@ -1,11 +1,8 @@
-const articleApiPrefix = `https://digest.pptmbt.com/api/`
-
 const NODE_ENV = process.env.NODE_ENV
 
 const isDev = NODE_ENV !== 'production'
 const apiPrefix = isDev ? `https://distrib.ymmbtw.com/` : 'https://cf.zxxgtw.com/'
 const appId = 'wx49821973c5425740'
-const version = '1.0.0'
 
 export default {
   appId,
