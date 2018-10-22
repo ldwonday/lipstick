@@ -1,13 +1,11 @@
-'use strict';
-
-var config = {
+const config = {
   projectName: 'collect-zan-taro',
   date: '2018-9-7',
   designWidth: 750,
   deviceRatio: {
-    '640': 1.17,
+    '640': 2.34 / 2,
     '750': 1,
-    '828': 0.905
+    '828': 1.81 / 2,
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
@@ -15,7 +13,11 @@ var config = {
     babel: {
       sourceMap: true,
       presets: ['env'],
-      plugins: ['transform-class-properties', 'transform-decorators-legacy', 'transform-object-rest-spread']
+      plugins: [
+        'transform-class-properties',
+        'transform-decorators-legacy',
+        'transform-object-rest-spread',
+      ],
     },
     typescript: {
       compilerOptions: {
@@ -35,36 +37,42 @@ var config = {
         rootDir: '.',
         sourceMap: true,
         strictNullChecks: true,
-        target: 'es6'
+        target: 'es6',
       },
       include: ['src/**/*'],
       exclude: ['node_modules'],
-      compileOnSave: false
-    }
+      compileOnSave: false,
+    },
   },
   defineConstants: {
-    '\u96C6\u8D5E\u9886': '集赞领',
-    "https://klimg.pptmbt.com/pub/jz/": 'https://klimg.pptmbt.com/pub/jz/'
+    APP_NAME: '集赞领',
+    ZF_IMAGE: 'https://klimg.pptmbt.com/pub/jz/',
   },
   copy: {
-    patterns: [{ from: 'src/asset/images', to: 'dist/asset/images' }, { from: 'src/components/wxParse/wxParse.wxss', to: 'dist/components/wxParse/wxParse.wxss' }, { from: 'src/components/wxParse/wxParse.wxml', to: 'dist/components/wxParse/wxParse.wxml' }],
-    options: {}
+    patterns: [
+      { from: 'src/asset/images', to: 'dist/asset/images' },
+      { from: 'src/components/wxParse/wxParse.wxss', to: 'dist/components/wxParse/wxParse.wxss' },
+      { from: 'src/components/wxParse/wxParse.wxml', to: 'dist/components/wxParse/wxParse.wxml' },
+    ],
+    options: {},
   },
   weapp: {
     module: {
       postcss: {
         autoprefixer: {
-          enable: true
+          enable: true,
         },
         pxtransform: {
-          selectorBlackList: [/^.van-.*?$/]
+          selectorBlackList: [
+            /^.van-.*?$/
+          ]
         },
         url: {
           enable: true,
-          limit: 10240
-        }
-      }
-    }
+          limit: 10240,
+        },
+      },
+    },
   },
   h5: {
     publicPath: '/',
@@ -72,16 +80,16 @@ var config = {
     module: {
       postcss: {
         autoprefixer: {
-          enable: true
-        }
-      }
-    }
-  }
-};
+          enable: true,
+        },
+      },
+    },
+  },
+}
 
 module.exports = function (merge) {
-  {
-    return merge({}, config, require("./dev.js"));
+  if (process.env.NODE_ENV === 'development') {
+    return merge({}, config, require('./dev'))
   }
-  return merge({}, config, require("./prod.js"));
-};
+  return merge({}, config, require('./prod'))
+}
