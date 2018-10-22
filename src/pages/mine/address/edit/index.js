@@ -25,7 +25,6 @@ export default class extends PureComponent {
   }
   handleSave() {
     this.props.dispatch(this.mappingAction('addOrUpdate', this.state.detail))
-    Taro.navigateBack()
   }
   handleRegionChange(e) {
     const [province, city, region] = e.detail.value

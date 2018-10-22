@@ -17,13 +17,6 @@ export default modelExtend(model, {
       const { data } = yield call(address.list)
       yield put(action('save', { list: data }))
     },
-    *addOrUpdate({ payload }, { call, put }) {
-      yield call(payload.id ? address.update : address.add, payload)
-      yield put(action('list'))
-      Taro.showToast({
-        title: '保存成功',
-      })
-    },
     *setDefault({ payload }, { call, put }) {
       const res = yield Taro.showModal({
         title: '提示',
