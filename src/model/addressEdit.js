@@ -14,7 +14,8 @@ export default modelExtend(model, {
     *init({ payload }, { put }) {},
 
     *addOrUpdate({ payload }, { call, put }) {
-      const { name, phone, province, city } = payload
+      const { detail, confirm } = payload
+      const { id, name, phone, province, city } = detail
       if (!name) {
         showTextToast('请输入联系人的姓名')
         return
@@ -27,15 +28,19 @@ export default modelExtend(model, {
         showTextToast('请选择联系人所在的省市区')
         return
       }
-      if (!payload.address) {
+      if (!detail.address) {
         showTextToast('请输入联系人的详细地址')
         return
       }
-      yield call(payload.id ? address.update : address.add, payload)
-      yield put(action('list'))
-      Taro.showToast({
-        title: '保存成功',
-      })
+      yield call(id ? address.update : address.add, detail)
+      if (confirm) {
+        yield put(action('orderConfirm/getAddress'))
+      } else {
+        yield put(action('address/list'))
+        Taro.showToast({
+          title: '保存成功',
+        })
+      }
       Taro.navigateBack()
     },
   },

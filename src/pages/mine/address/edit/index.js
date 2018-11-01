@@ -24,7 +24,12 @@ export default class extends PureComponent {
     setStorageEditAddress(null)
   }
   handleSave() {
-    this.props.dispatch(this.mappingAction('addOrUpdate', this.state.detail))
+    this.props.dispatch(
+      this.mappingAction('addOrUpdate', {
+        detail: this.state.detail,
+        confirm: this.$router.params.confirm,
+      })
+    )
   }
   handleRegionChange(e) {
     const [province, city, region] = e.detail.value

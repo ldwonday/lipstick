@@ -1,0 +1,23 @@
+@import "../../asset/styles/import";
+.empty{
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .bg{
+    margin-top: 216px;
+    width: 512px;
+    height: 310px;
+  }
+  .tip{
+    margin-top: 70px;
+    font-size: 32px;
+    color: #747474;
+  }
+  .desc{
+    margin-top: 16px;
+    font-size: 26px;
+    color: #BBBBBB;
+  }
+}

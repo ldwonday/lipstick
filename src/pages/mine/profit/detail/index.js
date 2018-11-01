@@ -1,8 +1,9 @@
 import { View } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import Taro, { PureComponent } from '@tarojs/taro'
-import { Loading } from '../../../../components'
+import { Loading, Empty } from '../../../../components'
 import { formatDate } from '../../../../utils/timeFormat'
+import EmptyImage from '../../../../asset/images/img-emptydetail.png'
 import './index.scss'
 import pageWithData from '../../../../common/PageWithData'
 
@@ -38,7 +39,11 @@ export default class extends PureComponent {
           <Loading height="100vh" />
         ) : (
           <block>
+            {titleList.length === 0 && (
+              <Empty image={EmptyImage} tip="暂无收支明细" desc="好友助力，分享有赏！" />
+            )}
             {titleList &&
+              titleList.length > 0 &&
               titleList.map(item => {
                 return (
                   <block key={item}>

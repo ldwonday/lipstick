@@ -155,7 +155,7 @@ export const getStorageShareTimesInit = async () => {
     number: 0,
   }
   try {
-    const { data }= await getStorageShareTimes()
+    const { data } = await getStorageShareTimes()
     times = data
   } catch (e) {
     times = []
