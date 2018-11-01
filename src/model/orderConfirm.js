@@ -3,7 +3,7 @@ import modelExtend from 'dva-model-extend'
 import action from '../utils/action'
 import { orderService, productService, userService, wxService } from '../service'
 import { model } from './common'
-import { hideWxLoading, showModal, showWxLoading } from '../utils'
+import { hideWxLoading, showModal, showWxLoading, showTextToast } from '../utils'
 
 export default modelExtend(model, {
   namespace: 'orderConfirm',
@@ -26,6 +26,14 @@ export default modelExtend(model, {
       yield put(action('save', { postDetail: data }))
     },
     *commit({ payload }, { call }) {
+      if (!payload.addressId) {
+        showTextToast('请选择收货地址')
+        return
+      }
+      if (payload.count <= 0 || payload.count > 99) {
+        showTextToast('请核对您要购买的数量')
+        return
+      }
       showWxLoading()
       try {
         const { data } = yield call(orderService.commit, payload)

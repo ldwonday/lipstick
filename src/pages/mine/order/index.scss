@@ -1,4 +1,3 @@
-@import '../../../asset/styles/import';
 .order{
   .more{
     position: fixed;
@@ -21,7 +20,7 @@
     }
   }
   .no-data{
-    color: $gray;
+    color: #9B9B9B;
     font-size: 28px;
     height: 80vh;
     margin-bottom: 30px;

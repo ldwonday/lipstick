@@ -5,7 +5,6 @@ import Behaviors from '../../utils/CommonBehavior'
 import { Iconfont } from '../../components'
 import MenuItem from './MenuItem'
 import iconContact from '../../asset/images/img-mine-contact.png'
-import iconQuestion from '../../asset/images/img-mine-question.png'
 import iconIncome from '../../asset/images/img-mine-income.png'
 import iconMyProduct from '../../asset/images/img-mine-various.png'
 import './index.scss'
@@ -75,8 +74,6 @@ export default class extends PureComponent {
               <MenuItem icon={iconIncome} name="我的收益" to="/pages/mine/profit/index" />
             </Button>
           )}
-          <View className="line1px" />
-          <MenuItem icon={iconQuestion} name="常见问题" />
           <View className="line1px" />
           <Button openType="contact" className="custom kefu">
             <MenuItem icon={iconContact} name="联系客服" />

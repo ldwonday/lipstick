@@ -8,11 +8,13 @@ export default class extends PureComponent {
   static defaultProps = {
     data: {},
   }
-  handleEdit() {
+  handleEdit(e) {
+    e.stopPropagation()
     setStorageEditAddress(this.props.data)
     this.props.onEdit()
   }
-  handleSetDefault(isDefault) {
+  handleSetDefault(isDefault, e) {
+    e.stopPropagation()
     if (!isDefault) {
       this.props.onSetDefault()
     }
@@ -24,8 +26,8 @@ export default class extends PureComponent {
         <View className="top">
           <View className="left">
             <View className="default" onClick={this.handleSetDefault.bind(this, isDefault)}>
-              {isDefault && <Iconfont type="gouxuan02" size={46} color="#FF312A" />}
-              {!isDefault && <Iconfont type="gouxuan01" size={46} color="#9B9B9B" />}
+              {isDefault && <Iconfont type="gouxuan02" size={42} color="#FF312A" />}
+              {!isDefault && <Iconfont type="gouxuan01" size={42} color="#9B9B9B" />}
             </View>
             <View className="name">{name}</View>
             <View className="phone">{phone}</View>

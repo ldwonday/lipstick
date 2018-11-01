@@ -2,10 +2,11 @@ import Taro, { PureComponent } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import pageWithData from '../../../common/PageWithData'
-import { Loading } from '../../../components'
+import { Loading, Empty } from '../../../components'
 import AddressItem from './AddressItem'
 import BottomBtn from './BottomBtn'
 import action from '../../../utils/action'
+import EmptyImage from '../../../asset/images/img-emptyaddress.png'
 import './index.scss'
 
 @pageWithData('address')
@@ -41,7 +42,13 @@ export default class extends PureComponent {
         ) : (
           <block>
             <View className="list">
-              {list.length === 0 && <View className="no-data">您还没有添加地址，立刻添加一个吧</View>}
+              {list.length === 0 && (
+                <Empty
+                  image={EmptyImage}
+                  tip="您还没有填写过收货地址"
+                  desc="点击下方按钮新增地址"
+                />
+              )}
               {list.length > 0 &&
                 list.map(item => (
                   <block>

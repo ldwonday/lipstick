@@ -37,6 +37,9 @@ export const showModalWithTitle = (title = '提示', content = '数据加载失�
     })
   }
 }
+export const showTextToast = (content = '') => {
+  return Taro.showToast({ title: content, icon: 'none' })
+}
 export const showFailModal = (content = '数据加载失败') => {
   return showModal(content)
 }
@@ -152,7 +155,7 @@ export const getStorageShareTimesInit = async () => {
     number: 0,
   }
   try {
-    const { data }= await getStorageShareTimes()
+    const { data } = await getStorageShareTimes()
     times = data
   } catch (e) {
     times = []

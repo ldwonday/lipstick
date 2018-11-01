@@ -21,9 +21,15 @@ export default class extends PureComponent {
     buyNum: 1,
   }
   handleGoAddress() {
-    Taro.navigateTo({
-      url: '/pages/mine/address/index?chooseAddress=true',
-    })
+    if (!this.props.postDetail.id) {
+      Taro.navigateTo({
+        url: '/pages/mine/address/edit/index?confirm=true',
+      })
+    } else {
+      Taro.navigateTo({
+        url: '/pages/mine/address/index?chooseAddress=true',
+      })
+    }
   }
   handleBuyNumChange(buyNum) {
     this.setState({

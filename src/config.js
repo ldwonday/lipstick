@@ -1,5 +1,4 @@
 const articleApiPrefix = `https://digest.pptmbt.com/api/`
-
 const NODE_ENV = process.env.NODE_ENV
 
 const isDev = NODE_ENV !== 'production'

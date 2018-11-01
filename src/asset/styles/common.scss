@@ -32,23 +32,23 @@ button{
 			height: 100%;
 		}
 	}
-	&.custom{
-		&:active{
-			background: none;
-			&:after{
-				background: none;
-				border: none;
-			}
-		}
-		&:hover{
-			background: none;
-			border: none;
-		}
-		&:after{
-			background: none;
-			border: none;
-		}
-	}
+  &.custom{
+    &:active{
+      background: none;
+      &:after{
+        background: none;
+        border: none;
+      }
+    }
+    &:hover{
+      background: none;
+      border: none;
+    }
+    &:after{
+      background: none;
+      border: none;
+    }
+  }
 	&.black{
 		width: 425rpx;
 		height: 80rpx;

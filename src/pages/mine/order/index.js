@@ -2,9 +2,10 @@ import { View, Text } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import Taro, { PureComponent } from '@tarojs/taro'
 import pageWithData from '../../../common/PageWithData'
-import { Loading, CustomModal } from '../../../components'
+import { Loading, CustomModal, Empty } from '../../../components'
 import OrderItem from './OrderItem'
 import action from '../../../utils/action'
+import EmptyImage from '../../../asset/images/img-emptybuy.png'
 import './index.scss'
 
 @pageWithData('order')
@@ -53,14 +54,18 @@ export default class extends PureComponent {
           <Loading height="100vh" />
         ) : (
           <block>
-            {list.map(cur => (
-              <OrderItem
-                key={cur}
-                data={cur}
-                onContact={this.changeModalState.bind(this, true)}
-                onDetail={this.handleDetail.bind(this)}
-              />
-            ))}
+            {list.length === 0 && (
+              <Empty image={EmptyImage} tip="暂无购买记录" desc="快去看看有什么喜欢的商品吧！" />
+            )}
+            {list.length > 0 &&
+              list.map(cur => (
+                <OrderItem
+                  key={cur}
+                  data={cur}
+                  onContact={this.changeModalState.bind(this, true)}
+                  onDetail={this.handleDetail.bind(this)}
+                />
+              ))}
             <CustomModal
               isShow={isShowModal}
               title="温馨提示"
