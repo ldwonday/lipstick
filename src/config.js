@@ -1,25 +1,13 @@
-const articleApiPrefix = `https://digest.pptmbt.com/api/`
 const NODE_ENV = process.env.NODE_ENV
 
 const isDev = NODE_ENV !== 'production'
 const apiPrefix = isDev ? `https://distrib.ymmbtw.com/` : 'https://cf.zxxgtw.com/'
 const appId = 'wx49821973c5425740'
-const version = '1.0.0'
 
 export default {
   appId,
   kefu: 'cxm19880710',
   api: {
-    article: {
-      list: `${articleApiPrefix}article/list`,
-      pages: `${articleApiPrefix}article/pages`,
-      query: id => `${articleApiPrefix}article/${id}`,
-      queryByIds: `${articleApiPrefix}queryByIds`,
-    },
-    config: {
-      check: `${apiPrefix}config/check?v=v${version}&appId=${appId}`,
-      init: `${apiPrefix}config/init/${appId}`,
-    },
     balance: {
       detail: `${apiPrefix}balance/detail`,
       query: `${apiPrefix}balance`,
