@@ -45,14 +45,12 @@ const config = {
     },
   },
   defineConstants: {
-    APP_NAME: '集赞领',
-    ZF_IMAGE: 'https://klimg.pptmbt.com/pub/jz/',
+    APP_NAME: '"我要赢口红"',
+    PUB_IMAGE: '"https://klimg.pptmbt.com/pub/lipstick/"',
   },
   copy: {
     patterns: [
       { from: 'src/asset/images', to: 'dist/asset/images' },
-      { from: 'src/components/wxParse/wxParse.wxss', to: 'dist/components/wxParse/wxParse.wxss' },
-      { from: 'src/components/wxParse/wxParse.wxml', to: 'dist/components/wxParse/wxParse.wxml' },
     ],
     options: {},
   },
@@ -64,7 +62,7 @@ const config = {
         },
         pxtransform: {
           selectorBlackList: [
-            /^.van-.*?$/
+            /*/^.van-.*?$/*/
           ]
         },
         url: {

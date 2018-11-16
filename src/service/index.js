@@ -5,6 +5,7 @@ import * as orderService from './order'
 import * as productService from './product'
 import * as wxService from './wx'
 import * as formService from './form'
+import * as lipstickService from './lipstick'
 
 export {
   balanceService,
@@ -14,4 +15,5 @@ export {
   productService,
   wxService,
   formService,
+  lipstickService,
 }

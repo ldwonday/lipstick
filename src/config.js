@@ -1,12 +1,14 @@
 const NODE_ENV = process.env.NODE_ENV
 
 const isDev = NODE_ENV !== 'production'
-const apiPrefix = isDev ? `https://distrib.ymmbtw.com/` : 'https://cf.zxxgtw.com/'
-const appId = 'wx49821973c5425740'
+const apiPrefix = isDev ? `https://kldev.ymmbtw.com/` : 'https://cf.zxxgtw.com/'
+const appId = 'wxdd3dd685e5349a39'
 
 export default {
   appId,
   kefu: 'cxm19880710',
+  help_address: '',
+  ios_announcement: '',
   api: {
     balance: {
       detail: `${apiPrefix}balance/detail`,
@@ -19,6 +21,7 @@ export default {
     },
     order: {
       commit: `${apiPrefix}order/commit`,
+      lipstickCommit: `${apiPrefix}order/lipstick/commit`,
       list: `${apiPrefix}order/list`,
       get: orderNo => `${apiPrefix}order/get/${orderNo}`,
     },
@@ -35,6 +38,18 @@ export default {
         list: `${apiPrefix}user/address/list`,
         setDefault: id => `${apiPrefix}user/address/default/${id}`,
       },
+    },
+    lipstick: {
+      bindAddress: `${apiPrefix}lipstick/bindAddress`,
+      challenge: `${apiPrefix}lipstick/challenge`,
+      gameFinish: `${apiPrefix}lipstick/gameFinish`,
+      gameStart: `${apiPrefix}lipstick/gameStart`,
+      getReward: `${apiPrefix}lipstick/getReward`,
+      my: `${apiPrefix}lipstick/my`,
+      prize: `${apiPrefix}lipstick/prize`,
+      prizeDetail: orderNo => `${apiPrefix}lipstick/prize/${orderNo}`,
+      productList: `${apiPrefix}lipstick/product/list`,
+      shareList: `${apiPrefix}lipstick/shareList`,
     },
     wx: {
       pay: {

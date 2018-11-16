@@ -1,8 +1,8 @@
 {
 	"miniprogramRoot": "dist/",
-	"projectname": "congregation-taro",
+	"projectname": "lipstick-taro",
 	"description": "article",
-	"appid": "wx49821973c5425740",
+	"appid": "wxdd3dd685e5349a39",
 	"setting": {
 		"urlCheck": true,
 		"es6": false,
@@ -11,7 +11,7 @@
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "1.9.97",
+	"libVersion": "2.4.0",
 	"condition": {
 		"search": {
 			"current": -1,
@@ -29,7 +29,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 11,
+			"current": 12,
 			"list": [
 				{
 					"id": 0,
@@ -101,8 +101,14 @@
 				{
 					"id": 11,
 					"name": "order/detail",
-					"pathName": "pages/order/detail/index",
-					"query": "orderNo=P288983820046257"
+					"pathName": "pages/mine/order/detail/index",
+					"query": "orderNo=test-order-no-001"
+				},
+				{
+					"id": 12,
+					"name": "index",
+					"pathName": "pages/index/index",
+					"query": "shareCode=05c3e8d5d56fceb8013c9e56396c803676866b53fca9ba4542306328b48f882e8e8a1adbb36e24e5373638234b5325e7b99c045780fe28315d714ec177e0daadf2fbc7b8a7e2eeee26aa661eb32e8158ae564bffd234587b4fdc196413a6c5f06c59532adc883e5b830a1b34216e0db54942636ca4fa7843e30dc3689161a20ec51fa4907d894724"
 				}
 			]
 		}

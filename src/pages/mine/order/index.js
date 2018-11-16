@@ -1,11 +1,12 @@
-import { View, Text } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
 import Taro, { PureComponent } from '@tarojs/taro'
+import { View, Text, Image, Button, Form } from '@tarojs/components'
+import { connect } from '@tarojs/redux'
+import { formatPrice } from '../../../utils'
+import { formatDate } from '../../../utils/timeFormat'
 import pageWithData from '../../../common/PageWithData'
-import { Loading, CustomModal, Empty } from '../../../components'
-import OrderItem from './OrderItem'
+import { Loading } from '../../../components'
 import action from '../../../utils/action'
-import EmptyImage from '../../../asset/images/img-emptybuy.png'
+import emptyImage from '../../../asset/images/empty_order_list.png'
 import './index.scss'
 
 @pageWithData('order')
@@ -14,11 +15,7 @@ import './index.scss'
 }))
 export default class extends PureComponent {
   config = {
-    navigationBarTitleText: '我购买的商品',
     enablePullDownRefresh: true,
-  }
-  state = {
-    isShowModal: false,
   }
   onReachBottom() {
     const { dispatch } = this.props
@@ -30,23 +27,21 @@ export default class extends PureComponent {
       Taro.stopPullDownRefresh()
     })
   }
-  handleIndex() {
-    Taro.switchTab({ url: '/pages/index/index' })
+  saveFormID(e) {
+    this.props.dispatch(action('app/submitForm', e.detail.formId))
   }
-  handleDetail(orderNo, formId) {
-    const url = `/pages/order/detail/index?orderNo=${orderNo}`
-    Taro.navigateTo({ url })
-    this.props.dispatch(action('app/submitForm', formId))
+  backHome() {
+    Taro.switchTab({
+      url: '/pages/index/index',
+    })
   }
-  changeModalState(status) {
-    this.setState({
-      isShowModal: status,
+  showOrder(orderNo) {
+    Taro.navigateTo({
+      url: '/pages/mine/order/detail/index?orderNo=' + orderNo,
     })
   }
   render() {
     const { list, loading } = this.props
-
-    const { isShowModal } = this.state
 
     return (
       <View className="order">
@@ -54,31 +49,53 @@ export default class extends PureComponent {
           <Loading height="100vh" />
         ) : (
           <block>
-            {list.length === 0 && (
-              <Empty image={EmptyImage} tip="暂无购买记录" desc="快去看看有什么喜欢的商品吧！" />
-            )}
-            {list.length > 0 &&
-              list.map(cur => (
-                <OrderItem
-                  key={cur}
-                  data={cur}
-                  onContact={this.changeModalState.bind(this, true)}
-                  onDetail={this.handleDetail.bind(this)}
-                />
-              ))}
-            <CustomModal
-              isShow={isShowModal}
-              title="温馨提示"
-              openType="contact"
-              btnText="立刻加微信"
-              onClose={this.changeModalState.bind(this, false)}
-            >
-              <View className="modal-content">
-                <Text>进入客服消息回复</Text>
-                <Text className="modal-red-text">"微信"</Text>
-                <Text>即可获取卖家微信</Text>
+            {list.length > 0 && (
+              <View className="body">
+                <Form onSubmit={this.saveFormID.bind(this)} reportSubmit="true">
+                  {list &&
+                    list.map(item => {
+                      return (
+                        <Button
+                          onClick={this.showOrder.bind(this, item.orderNo)}
+                          className="order"
+                          key={item.id}
+                          formType={this.saveFormID.bind(this)}
+                        >
+                          <View className="infomation">
+                            <Image
+                              className="image"
+                              lazyLoad
+                              mode="aspectFill"
+                              src={item.imageUrl}
+                            />
+                            <View className="right-part">
+                              <Text className="title">{item.productName}</Text>
+                              <Text className="original-price">￥{formatPrice(item.salePrice)} 专柜价格</Text>
+                              <View className="brand">
+                                <Text className="iconfont">{item.brand}</Text>
+                                <Text className="quality-goods">正品</Text>
+                              </View>
+                              <Text className="status">{item.expressStatus === 1 ? '等待申请' : item.expressStatus === 2 ? '待发货' : '已发货'}</Text>
+                            </View>
+                          </View>
+                          <View className="bottom">
+                            <Text className="order-id">中奖时间：{formatDate(item.createdAt)}</Text>
+                            <Text className="deliver" data-orderid="{{item.tid}}">{item.expressStatus === 1 ? '申请发货' : '订单详情'}</Text>
+                          </View>
+                          <View className="orderBorder" />
+                        </Button>
+                      )
+                    })}
+                </Form>
               </View>
-            </CustomModal>
+            )}
+            {list.length === 0 && (
+              <View className="empty">
+                <Image className="tip-image" src={emptyImage} />
+                <Text className="tip-text">您还未中奖，再接再厉</Text>
+                <Button onClick={this.backHome.bind(this)} className="tip-button" hoverClass="button-hover">马上赢口红</Button>
+              </View>
+            )}
           </block>
         )}
       </View>

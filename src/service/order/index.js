@@ -14,6 +14,16 @@ export const commit = (params) => {
 		}
 	})
 }
+export const lipstickCommit = (params) => {
+  return request(order.lipstickCommit, {
+    method: 'POST',
+    customToken: true,
+    contentType: 'application/json',
+    body: {
+      ...params,
+    }
+  })
+}
 export const list = () => {
 	return request(order.list, {
     customToken: true,

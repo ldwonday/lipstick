@@ -8,6 +8,12 @@ import models from './model'
 import action from './utils/action'
 import './app.scss'
 
+if (process.env.TARO_ENV === 'weapp') {
+  require('taro-ui/dist/weapp/css/index.css')
+} else if (process.env.TARO_ENV === 'h5') {
+  require('taro-ui/dist/h5/css/index.css')
+}
+
 const dvaApp = dva.createApp({
   initialState: {},
   models,
@@ -21,16 +27,11 @@ class App extends Component {
   config = {
     pages: [
       'pages/index/index',
-      'pages/detail/index',
-      'pages/order/confirm/index',
-      'pages/order/detail/index',
-      'pages/detail/comment/index',
       'pages/mine/index',
+      'pages/mine/service/index',
       'pages/mine/order/index',
-      'pages/mine/profit/index',
-      'pages/mine/profit/detail/index',
-      'pages/mine/address/index',
-      'pages/mine/address/edit/index',
+      'pages/mine/order/detail/index',
+      'pages/webview/index',
     ],
     window: {
       backgroundTextStyle: 'dark',
@@ -39,21 +40,21 @@ class App extends Component {
       navigationBarTextStyle: 'black',
     },
     tabBar: {
-      backgroundColor: '#fff',
-      selectedColor: '#FF5C21',
-      color: '#999',
+      color: '#909090',
+      selectedColor: '#000000',
+      borderStyle: 'black',
       list: [
         {
           pagePath: 'pages/index/index',
-          text: '首页',
-          iconPath: './asset/images/btn-home-default.png',
-          selectedIconPath: './asset/images/btn-home-selected.png',
+          text: '开始游戏',
+          iconPath: './asset/images/tabs/home.png',
+          selectedIconPath: './asset/images/tabs/home-selected.png',
         },
         {
           pagePath: 'pages/mine/index',
           text: '我的',
-          iconPath: './asset/images/btn-mine-default.png',
-          selectedIconPath: './asset/images/btn-mine-selected.png',
+          iconPath: './asset/images/tabs/me.png',
+          selectedIconPath: './asset/images/tabs/me-selected.png',
         },
       ],
     },

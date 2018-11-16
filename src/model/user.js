@@ -47,7 +47,8 @@ export default modelExtend(model, {
         }
 
         try {
-          yield call(mp.saveUser, other, shareCode)
+          const { data } = yield call(mp.saveUser, other, shareCode)
+          yield setStorageLoginResult(data)
           console.log('save user ok!!')
         } catch (e) {
           console.log('save user error ===> ', e)

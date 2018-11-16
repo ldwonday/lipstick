@@ -1,6 +1,5 @@
 import Taro from '@tarojs/taro'
 import { formatDate } from './timeFormat'
-import Notify from '../components/vant-weapp/dist/notify/notify'
 
 export const getNavHeight = async () => {
   let startBarHeight = 20
@@ -52,14 +51,6 @@ export const hideWxLoading = () => {
   Taro.hideLoading()
 }
 
-export const showNotify = (text, selector) => {
-  Notify({
-    text,
-    duration: 1500,
-    selector,
-    backgroundColor: '#E64340',
-  })
-}
 
 /*export const getStorageSyncAppConfig = () => {
   return Taro.getStorageSync('appConfig')
@@ -166,4 +157,21 @@ export const getStorageShareTimesInit = async () => {
     await setStorageShareTimes(times)
   }
   return times
+}
+
+export const formatPrice = value => {
+  var temp = parseFloat(value)
+  return temp.toFixed(2)
+}
+export const formatCoin = value => {
+  var temp = parseFloat(value)
+  return temp.toFixed(0)
+}
+export const formatNumber = n => {
+  n = n.toString()
+  return n[(1)] ? n : '0' + n
+}
+export const isAndroid = n => {
+  if (!n) return
+  return n.toLowerCase().indexOf('android') !== -1
 }

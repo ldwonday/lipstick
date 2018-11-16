@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import action from '../utils/action'
-import { orderService } from '../service'
+import { lipstickService } from '../service'
 import { listPageModel } from './common'
 
 export default modelExtend(listPageModel, {
@@ -12,7 +12,7 @@ export default modelExtend(listPageModel, {
     },
     *list({ payload }, { call, put, select }) {
       const selectFilter = yield select(state => state.order.filter)
-      const { data } = yield call(orderService.list, { ...selectFilter, ...payload })
+      const { data } = yield call(lipstickService.prize, { ...selectFilter, ...payload })
       yield put(action('saveList', { data, filter: payload }))
     },
     *loadMore({ payload }, { select, call, put }) {
@@ -22,7 +22,7 @@ export default modelExtend(listPageModel, {
           ...filter,
           page: filter.page + 1,
         }
-        const { data } = yield call(orderService.list, newFilter)
+        const { data } = yield call(lipstickService.prize, newFilter)
         data.items = list.concat(data.items)
         yield put(action('saveList', { data, filter: newFilter }))
       }

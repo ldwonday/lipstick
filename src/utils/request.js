@@ -60,11 +60,11 @@ const addQs = (url, qs) => {
   return newUrl
 }
 
-// 失效重试次数
-let invalidTryTimes = 0
 let token
 
-const request = (url, options) => {
+// invalidTryTimes 失效重试次数
+
+const request = (url, options, invalidTryTimes = 0) => {
   const opts = makeOptions(url, options)
   const { method, body, headers, qs, type, contentType } = opts
 
@@ -110,13 +110,13 @@ const request = (url, options) => {
           if (data && typeof data === 'object') {
             errors = Object.assign({}, errors, data)
           }
-          if (data.code === 401 && invalidTryTimes < 5 && !opts.async) {
+          if (data.code === 401 && invalidTryTimes < 3 && !opts.async) {
             invalidTryTimes++
-            token = null
             dva
               .getDispatch()(action('user/login'))
               .then(_ => {
-                resolve(request(url, options))
+                token = null
+                resolve(request(url, options, invalidTryTimes))
               })
               .catch(e => {
                 reject(e)
